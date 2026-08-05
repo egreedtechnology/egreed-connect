@@ -1,0 +1,99 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { PublicFooter } from "@/components/layout/PublicFooter";
+import { PublicHeader } from "@/components/layout/PublicHeader";
+import { API_SCOPES, EGREED, OAUTH_SCOPES, SUBDOMAINS } from "@/lib/egreed";
+
+const TITLE = "Documentation — EGREED Identity";
+const DESCRIPTION =
+  "Integrate with EGREED Identity: OAuth 2.1 / OIDC endpoints, scopes, API keys and platform architecture.";
+
+export const Route = createFileRoute("/docs")({
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+    ],
+  }),
+  component: DocsPage,
+});
+
+const ENDPOINTS = [
+  ["GET", "/.well-known/openid-configuration", "Discovery document"],
+  ["GET", "/oauth/authorize", "Authorization request (PKCE required for public clients)"],
+  ["POST", "/oauth/token", "Token exchange and refresh rotation"],
+  ["GET", "/oauth/userinfo", "OIDC claims for the current access token"],
+  ["POST", "/oauth/revoke", "Revoke an access or refresh token"],
+  ["GET", "/api/v1/me", "Profile, roles and organization membership"],
+] as const;
+
+function DocsPage() {
+  return (
+    <div className="min-h-screen bg-background">
+      <PublicHeader />
+      <main className="mx-auto max-w-4xl px-5 py-20">
+        <h1 className="font-display text-4xl font-semibold tracking-tight">Documentation</h1>
+        <p className="mt-4 text-muted-foreground">{DESCRIPTION}</p>
+
+        <section className="mt-14">
+          <h2 className="font-display text-2xl font-semibold">Platform surfaces</h2>
+          <ul className="mt-5 divide-y divide-border">
+            {SUBDOMAINS.map((entry) => (
+              <li key={entry.host} className="flex flex-wrap justify-between gap-2 py-3">
+                <code className="font-mono text-sm text-primary">{entry.host}</code>
+                <span className="text-sm text-muted-foreground">{entry.purpose}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-14">
+          <h2 className="font-display text-2xl font-semibold">OAuth 2.1 / OIDC endpoints</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Base URL: <code className="font-mono text-primary">https://{EGREED.domain}</code>
+          </p>
+          <ul className="mt-5 space-y-3">
+            {ENDPOINTS.map(([method, path, note]) => (
+              <li key={path} className="surface-panel p-4">
+                <p className="font-mono text-xs">
+                  <span className="text-primary">{method}</span> {path}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{note}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-14 grid gap-8 sm:grid-cols-2">
+          <div>
+            <h2 className="font-display text-2xl font-semibold">OAuth scopes</h2>
+            <ul className="mt-4 space-y-1 font-mono text-sm text-muted-foreground">
+              {OAUTH_SCOPES.map((scope) => (
+                <li key={scope}>{scope}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="font-display text-2xl font-semibold">API key scopes</h2>
+            <ul className="mt-4 space-y-1 font-mono text-sm text-muted-foreground">
+              {API_SCOPES.map((scope) => (
+                <li key={scope}>{scope}</li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section className="mt-14">
+          <h2 className="font-display text-2xl font-semibold">Authenticating a request</h2>
+          <pre className="surface-panel mt-4 overflow-x-auto p-4 font-mono text-xs">
+            {`curl https://${EGREED.domain}/api/v1/me \\
+  -H "Authorization: Bearer egr_live_..." \\
+  -H "Accept: application/json"`}
+          </pre>
+        </section>
+      </main>
+      <PublicFooter />
+    </div>
+  );
+}

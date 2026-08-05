@@ -10,33 +10,234 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DocsRouteImport } from './routes/docs'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as StatusRouteImport } from './routes/status'
+import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
+import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authenticated/developer'
+import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account.index'
+import { Route as AuthenticatedAccountActivityRouteImport } from './routes/_authenticated/account.activity'
+import { Route as AuthenticatedAccountDevicesRouteImport } from './routes/_authenticated/account.devices'
+import { Route as AuthenticatedAccountPrivacyRouteImport } from './routes/_authenticated/account.privacy'
+import { Route as AuthenticatedAccountProfileRouteImport } from './routes/_authenticated/account.profile'
+import { Route as AuthenticatedAccountSecurityRouteImport } from './routes/_authenticated/account.security'
+import { Route as AuthenticatedDeveloperIndexRouteImport } from './routes/_authenticated/developer.index'
+import { Route as AuthenticatedDeveloperApplicationsRouteImport } from './routes/_authenticated/developer.applications'
+import { Route as AuthenticatedDeveloperKeysRouteImport } from './routes/_authenticated/developer.keys'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDeveloperRoute = AuthenticatedDeveloperRouteImport.update({
+  id: '/developer',
+  path: '/developer',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAccountIndexRoute =
+  AuthenticatedAccountIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAccountRoute,
+  } as any)
+const AuthenticatedAccountActivityRoute =
+  AuthenticatedAccountActivityRouteImport.update({
+    id: '/activity',
+    path: '/activity',
+    getParentRoute: () => AuthenticatedAccountRoute,
+  } as any)
+const AuthenticatedAccountDevicesRoute =
+  AuthenticatedAccountDevicesRouteImport.update({
+    id: '/devices',
+    path: '/devices',
+    getParentRoute: () => AuthenticatedAccountRoute,
+  } as any)
+const AuthenticatedAccountPrivacyRoute =
+  AuthenticatedAccountPrivacyRouteImport.update({
+    id: '/privacy',
+    path: '/privacy',
+    getParentRoute: () => AuthenticatedAccountRoute,
+  } as any)
+const AuthenticatedAccountProfileRoute =
+  AuthenticatedAccountProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedAccountRoute,
+  } as any)
+const AuthenticatedAccountSecurityRoute =
+  AuthenticatedAccountSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => AuthenticatedAccountRoute,
+  } as any)
+const AuthenticatedDeveloperIndexRoute =
+  AuthenticatedDeveloperIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDeveloperRoute,
+  } as any)
+const AuthenticatedDeveloperApplicationsRoute =
+  AuthenticatedDeveloperApplicationsRouteImport.update({
+    id: '/applications',
+    path: '/applications',
+    getParentRoute: () => AuthenticatedDeveloperRoute,
+  } as any)
+const AuthenticatedDeveloperKeysRoute =
+  AuthenticatedDeveloperKeysRouteImport.update({
+    id: '/keys',
+    path: '/keys',
+    getParentRoute: () => AuthenticatedDeveloperRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/docs': typeof DocsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/status': typeof StatusRoute
+  '/account': typeof AuthenticatedAccountRouteWithChildren
+  '/developer': typeof AuthenticatedDeveloperRouteWithChildren
+  '/account/activity': typeof AuthenticatedAccountActivityRoute
+  '/account/devices': typeof AuthenticatedAccountDevicesRoute
+  '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
+  '/account/profile': typeof AuthenticatedAccountProfileRoute
+  '/account/security': typeof AuthenticatedAccountSecurityRoute
+  '/developer/applications': typeof AuthenticatedDeveloperApplicationsRoute
+  '/developer/keys': typeof AuthenticatedDeveloperKeysRoute
+  '/account/': typeof AuthenticatedAccountIndexRoute
+  '/developer/': typeof AuthenticatedDeveloperIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/docs': typeof DocsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/status': typeof StatusRoute
+  '/account/activity': typeof AuthenticatedAccountActivityRoute
+  '/account/devices': typeof AuthenticatedAccountDevicesRoute
+  '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
+  '/account/profile': typeof AuthenticatedAccountProfileRoute
+  '/account/security': typeof AuthenticatedAccountSecurityRoute
+  '/developer/applications': typeof AuthenticatedDeveloperApplicationsRoute
+  '/developer/keys': typeof AuthenticatedDeveloperKeysRoute
+  '/account': typeof AuthenticatedAccountIndexRoute
+  '/developer': typeof AuthenticatedDeveloperIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/docs': typeof DocsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/status': typeof StatusRoute
+  '/_authenticated/account': typeof AuthenticatedAccountRouteWithChildren
+  '/_authenticated/developer': typeof AuthenticatedDeveloperRouteWithChildren
+  '/_authenticated/account/activity': typeof AuthenticatedAccountActivityRoute
+  '/_authenticated/account/devices': typeof AuthenticatedAccountDevicesRoute
+  '/_authenticated/account/privacy': typeof AuthenticatedAccountPrivacyRoute
+  '/_authenticated/account/profile': typeof AuthenticatedAccountProfileRoute
+  '/_authenticated/account/security': typeof AuthenticatedAccountSecurityRoute
+  '/_authenticated/developer/applications': typeof AuthenticatedDeveloperApplicationsRoute
+  '/_authenticated/developer/keys': typeof AuthenticatedDeveloperKeysRoute
+  '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
+  '/_authenticated/developer/': typeof AuthenticatedDeveloperIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/docs'
+    | '/reset-password'
+    | '/status'
+    | '/account'
+    | '/developer'
+    | '/account/activity'
+    | '/account/devices'
+    | '/account/privacy'
+    | '/account/profile'
+    | '/account/security'
+    | '/developer/applications'
+    | '/developer/keys'
+    | '/account/'
+    | '/developer/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/docs'
+    | '/reset-password'
+    | '/status'
+    | '/account/activity'
+    | '/account/devices'
+    | '/account/privacy'
+    | '/account/profile'
+    | '/account/security'
+    | '/developer/applications'
+    | '/developer/keys'
+    | '/account'
+    | '/developer'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/docs'
+    | '/reset-password'
+    | '/status'
+    | '/_authenticated/account'
+    | '/_authenticated/developer'
+    | '/_authenticated/account/activity'
+    | '/_authenticated/account/devices'
+    | '/_authenticated/account/privacy'
+    | '/_authenticated/account/profile'
+    | '/_authenticated/account/security'
+    | '/_authenticated/developer/applications'
+    | '/_authenticated/developer/keys'
+    | '/_authenticated/account/'
+    | '/_authenticated/developer/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  DocsRoute: typeof DocsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  StatusRoute: typeof StatusRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +249,181 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/account': {
+      id: '/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/developer': {
+      id: '/_authenticated/developer'
+      path: '/developer'
+      fullPath: '/developer'
+      preLoaderRoute: typeof AuthenticatedDeveloperRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/account/': {
+      id: '/_authenticated/account/'
+      path: '/'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AuthenticatedAccountIndexRouteImport
+      parentRoute: typeof AuthenticatedAccountRoute
+    }
+    '/_authenticated/account/activity': {
+      id: '/_authenticated/account/activity'
+      path: '/activity'
+      fullPath: '/account/activity'
+      preLoaderRoute: typeof AuthenticatedAccountActivityRouteImport
+      parentRoute: typeof AuthenticatedAccountRoute
+    }
+    '/_authenticated/account/devices': {
+      id: '/_authenticated/account/devices'
+      path: '/devices'
+      fullPath: '/account/devices'
+      preLoaderRoute: typeof AuthenticatedAccountDevicesRouteImport
+      parentRoute: typeof AuthenticatedAccountRoute
+    }
+    '/_authenticated/account/privacy': {
+      id: '/_authenticated/account/privacy'
+      path: '/privacy'
+      fullPath: '/account/privacy'
+      preLoaderRoute: typeof AuthenticatedAccountPrivacyRouteImport
+      parentRoute: typeof AuthenticatedAccountRoute
+    }
+    '/_authenticated/account/profile': {
+      id: '/_authenticated/account/profile'
+      path: '/profile'
+      fullPath: '/account/profile'
+      preLoaderRoute: typeof AuthenticatedAccountProfileRouteImport
+      parentRoute: typeof AuthenticatedAccountRoute
+    }
+    '/_authenticated/account/security': {
+      id: '/_authenticated/account/security'
+      path: '/security'
+      fullPath: '/account/security'
+      preLoaderRoute: typeof AuthenticatedAccountSecurityRouteImport
+      parentRoute: typeof AuthenticatedAccountRoute
+    }
+    '/_authenticated/developer/': {
+      id: '/_authenticated/developer/'
+      path: '/'
+      fullPath: '/developer/'
+      preLoaderRoute: typeof AuthenticatedDeveloperIndexRouteImport
+      parentRoute: typeof AuthenticatedDeveloperRoute
+    }
+    '/_authenticated/developer/applications': {
+      id: '/_authenticated/developer/applications'
+      path: '/applications'
+      fullPath: '/developer/applications'
+      preLoaderRoute: typeof AuthenticatedDeveloperApplicationsRouteImport
+      parentRoute: typeof AuthenticatedDeveloperRoute
+    }
+    '/_authenticated/developer/keys': {
+      id: '/_authenticated/developer/keys'
+      path: '/keys'
+      fullPath: '/developer/keys'
+      preLoaderRoute: typeof AuthenticatedDeveloperKeysRouteImport
+      parentRoute: typeof AuthenticatedDeveloperRoute
+    }
   }
 }
 
+interface AuthenticatedAccountRouteChildren {
+  AuthenticatedAccountActivityRoute: typeof AuthenticatedAccountActivityRoute
+  AuthenticatedAccountDevicesRoute: typeof AuthenticatedAccountDevicesRoute
+  AuthenticatedAccountPrivacyRoute: typeof AuthenticatedAccountPrivacyRoute
+  AuthenticatedAccountProfileRoute: typeof AuthenticatedAccountProfileRoute
+  AuthenticatedAccountSecurityRoute: typeof AuthenticatedAccountSecurityRoute
+  AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
+}
+
+const AuthenticatedAccountRouteChildren: AuthenticatedAccountRouteChildren = {
+  AuthenticatedAccountActivityRoute: AuthenticatedAccountActivityRoute,
+  AuthenticatedAccountDevicesRoute: AuthenticatedAccountDevicesRoute,
+  AuthenticatedAccountPrivacyRoute: AuthenticatedAccountPrivacyRoute,
+  AuthenticatedAccountProfileRoute: AuthenticatedAccountProfileRoute,
+  AuthenticatedAccountSecurityRoute: AuthenticatedAccountSecurityRoute,
+  AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
+}
+
+const AuthenticatedAccountRouteWithChildren =
+  AuthenticatedAccountRoute._addFileChildren(AuthenticatedAccountRouteChildren)
+
+interface AuthenticatedDeveloperRouteChildren {
+  AuthenticatedDeveloperApplicationsRoute: typeof AuthenticatedDeveloperApplicationsRoute
+  AuthenticatedDeveloperKeysRoute: typeof AuthenticatedDeveloperKeysRoute
+  AuthenticatedDeveloperIndexRoute: typeof AuthenticatedDeveloperIndexRoute
+}
+
+const AuthenticatedDeveloperRouteChildren: AuthenticatedDeveloperRouteChildren =
+  {
+    AuthenticatedDeveloperApplicationsRoute:
+      AuthenticatedDeveloperApplicationsRoute,
+    AuthenticatedDeveloperKeysRoute: AuthenticatedDeveloperKeysRoute,
+    AuthenticatedDeveloperIndexRoute: AuthenticatedDeveloperIndexRoute,
+  }
+
+const AuthenticatedDeveloperRouteWithChildren =
+  AuthenticatedDeveloperRoute._addFileChildren(
+    AuthenticatedDeveloperRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountRoute: typeof AuthenticatedAccountRouteWithChildren
+  AuthenticatedDeveloperRoute: typeof AuthenticatedDeveloperRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountRoute: AuthenticatedAccountRouteWithChildren,
+  AuthenticatedDeveloperRoute: AuthenticatedDeveloperRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  DocsRoute: DocsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  StatusRoute: StatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

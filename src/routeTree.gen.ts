@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as StatusRouteImport } from './routes/status'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authenticated/developer'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account.index'
@@ -48,6 +49,11 @@ const DocsRoute = DocsRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/docs': typeof DocsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/status': typeof StatusRoute
   '/account': typeof AuthenticatedAccountRouteWithChildren
   '/developer': typeof AuthenticatedDeveloperRouteWithChildren
   '/account/activity': typeof AuthenticatedAccountActivityRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/docs': typeof DocsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/status': typeof StatusRoute
   '/account/activity': typeof AuthenticatedAccountActivityRoute
   '/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/docs': typeof DocsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/status': typeof StatusRoute
   '/_authenticated/account': typeof AuthenticatedAccountRouteWithChildren
   '/_authenticated/developer': typeof AuthenticatedDeveloperRouteWithChildren
   '/_authenticated/account/activity': typeof AuthenticatedAccountActivityRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/docs'
     | '/reset-password'
+    | '/status'
     | '/account'
     | '/developer'
     | '/account/activity'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/docs'
     | '/reset-password'
+    | '/status'
     | '/account/activity'
     | '/account/devices'
     | '/account/privacy'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/docs'
     | '/reset-password'
+    | '/status'
     | '/_authenticated/account'
     | '/_authenticated/developer'
     | '/_authenticated/account/activity'
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DocsRoute: typeof DocsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  StatusRoute: typeof StatusRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -262,6 +275,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/account': {
@@ -403,6 +423,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DocsRoute: DocsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  StatusRoute: StatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

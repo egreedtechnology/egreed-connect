@@ -17,6 +17,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authenticated/developer'
+import { Route as AuthenticatedOrganizationsRouteImport } from './routes/_authenticated/organizations'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account.index'
 import { Route as AuthenticatedAccountActivityRouteImport } from './routes/_authenticated/account.activity'
 import { Route as AuthenticatedAccountDevicesRouteImport } from './routes/_authenticated/account.devices'
@@ -66,6 +67,12 @@ const AuthenticatedDeveloperRoute = AuthenticatedDeveloperRouteImport.update({
   path: '/developer',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOrganizationsRoute =
+  AuthenticatedOrganizationsRouteImport.update({
+    id: '/organizations',
+    path: '/organizations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAccountIndexRoute =
   AuthenticatedAccountIndexRouteImport.update({
     id: '/',
@@ -129,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/status': typeof StatusRoute
   '/account': typeof AuthenticatedAccountRouteWithChildren
   '/developer': typeof AuthenticatedDeveloperRouteWithChildren
+  '/organizations': typeof AuthenticatedOrganizationsRoute
   '/account/activity': typeof AuthenticatedAccountActivityRoute
   '/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
@@ -145,6 +153,7 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/status': typeof StatusRoute
+  '/organizations': typeof AuthenticatedOrganizationsRoute
   '/account/activity': typeof AuthenticatedAccountActivityRoute
   '/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
@@ -165,6 +174,7 @@ export interface FileRoutesById {
   '/status': typeof StatusRoute
   '/_authenticated/account': typeof AuthenticatedAccountRouteWithChildren
   '/_authenticated/developer': typeof AuthenticatedDeveloperRouteWithChildren
+  '/_authenticated/organizations': typeof AuthenticatedOrganizationsRoute
   '/_authenticated/account/activity': typeof AuthenticatedAccountActivityRoute
   '/_authenticated/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/_authenticated/account/privacy': typeof AuthenticatedAccountPrivacyRoute
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/account'
     | '/developer'
+    | '/organizations'
     | '/account/activity'
     | '/account/devices'
     | '/account/privacy'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/reset-password'
     | '/status'
+    | '/organizations'
     | '/account/activity'
     | '/account/devices'
     | '/account/privacy'
@@ -220,6 +232,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/_authenticated/account'
     | '/_authenticated/developer'
+    | '/_authenticated/organizations'
     | '/_authenticated/account/activity'
     | '/_authenticated/account/devices'
     | '/_authenticated/account/privacy'
@@ -296,6 +309,13 @@ declare module '@tanstack/react-router' {
       path: '/developer'
       fullPath: '/developer'
       preLoaderRoute: typeof AuthenticatedDeveloperRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/organizations': {
+      id: '/_authenticated/organizations'
+      path: '/organizations'
+      fullPath: '/organizations'
+      preLoaderRoute: typeof AuthenticatedOrganizationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/account/': {
@@ -407,11 +427,13 @@ const AuthenticatedDeveloperRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRouteWithChildren
   AuthenticatedDeveloperRoute: typeof AuthenticatedDeveloperRouteWithChildren
+  AuthenticatedOrganizationsRoute: typeof AuthenticatedOrganizationsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRouteWithChildren,
   AuthenticatedDeveloperRoute: AuthenticatedDeveloperRouteWithChildren,
+  AuthenticatedOrganizationsRoute: AuthenticatedOrganizationsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

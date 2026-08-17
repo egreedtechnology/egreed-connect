@@ -37,6 +37,12 @@ const GROUPS = [
     ],
   },
   {
+    title: "Teams",
+    items: [
+      { to: "/organizations" as const, label: "Organizations", icon: Building2, exact: false },
+    ],
+  },
+  {
     title: "Developer",
     items: [
       { to: "/developer" as const, label: "Console", icon: Terminal, exact: true },

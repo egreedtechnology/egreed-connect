@@ -27,6 +27,8 @@ import { Route as AuthenticatedAccountSecurityRouteImport } from './routes/_auth
 import { Route as AuthenticatedDeveloperIndexRouteImport } from './routes/_authenticated/developer.index'
 import { Route as AuthenticatedDeveloperApplicationsRouteImport } from './routes/_authenticated/developer.applications'
 import { Route as AuthenticatedDeveloperKeysRouteImport } from './routes/_authenticated/developer.keys'
+import { Route as AuthenticatedOrganizationsIndexRouteImport } from './routes/_authenticated/organizations.index'
+import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_authenticated/organizations.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -127,6 +129,18 @@ const AuthenticatedDeveloperKeysRoute =
     path: '/keys',
     getParentRoute: () => AuthenticatedDeveloperRoute,
   } as any)
+const AuthenticatedOrganizationsIndexRoute =
+  AuthenticatedOrganizationsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedOrganizationsRoute,
+  } as any)
+const AuthenticatedOrganizationsSlugRoute =
+  AuthenticatedOrganizationsSlugRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => AuthenticatedOrganizationsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -136,7 +150,7 @@ export interface FileRoutesByFullPath {
   '/status': typeof StatusRoute
   '/account': typeof AuthenticatedAccountRouteWithChildren
   '/developer': typeof AuthenticatedDeveloperRouteWithChildren
-  '/organizations': typeof AuthenticatedOrganizationsRoute
+  '/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
   '/account/activity': typeof AuthenticatedAccountActivityRoute
   '/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
@@ -144,8 +158,10 @@ export interface FileRoutesByFullPath {
   '/account/security': typeof AuthenticatedAccountSecurityRoute
   '/developer/applications': typeof AuthenticatedDeveloperApplicationsRoute
   '/developer/keys': typeof AuthenticatedDeveloperKeysRoute
+  '/organizations/$slug': typeof AuthenticatedOrganizationsSlugRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/developer/': typeof AuthenticatedDeveloperIndexRoute
+  '/organizations/': typeof AuthenticatedOrganizationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -153,7 +169,6 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/status': typeof StatusRoute
-  '/organizations': typeof AuthenticatedOrganizationsRoute
   '/account/activity': typeof AuthenticatedAccountActivityRoute
   '/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
@@ -161,8 +176,10 @@ export interface FileRoutesByTo {
   '/account/security': typeof AuthenticatedAccountSecurityRoute
   '/developer/applications': typeof AuthenticatedDeveloperApplicationsRoute
   '/developer/keys': typeof AuthenticatedDeveloperKeysRoute
+  '/organizations/$slug': typeof AuthenticatedOrganizationsSlugRoute
   '/account': typeof AuthenticatedAccountIndexRoute
   '/developer': typeof AuthenticatedDeveloperIndexRoute
+  '/organizations': typeof AuthenticatedOrganizationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -174,7 +191,7 @@ export interface FileRoutesById {
   '/status': typeof StatusRoute
   '/_authenticated/account': typeof AuthenticatedAccountRouteWithChildren
   '/_authenticated/developer': typeof AuthenticatedDeveloperRouteWithChildren
-  '/_authenticated/organizations': typeof AuthenticatedOrganizationsRoute
+  '/_authenticated/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
   '/_authenticated/account/activity': typeof AuthenticatedAccountActivityRoute
   '/_authenticated/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/_authenticated/account/privacy': typeof AuthenticatedAccountPrivacyRoute
@@ -182,8 +199,10 @@ export interface FileRoutesById {
   '/_authenticated/account/security': typeof AuthenticatedAccountSecurityRoute
   '/_authenticated/developer/applications': typeof AuthenticatedDeveloperApplicationsRoute
   '/_authenticated/developer/keys': typeof AuthenticatedDeveloperKeysRoute
+  '/_authenticated/organizations/$slug': typeof AuthenticatedOrganizationsSlugRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/developer/': typeof AuthenticatedDeveloperIndexRoute
+  '/_authenticated/organizations/': typeof AuthenticatedOrganizationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -203,8 +222,10 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/developer/applications'
     | '/developer/keys'
+    | '/organizations/$slug'
     | '/account/'
     | '/developer/'
+    | '/organizations/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -212,7 +233,6 @@ export interface FileRouteTypes {
     | '/docs'
     | '/reset-password'
     | '/status'
-    | '/organizations'
     | '/account/activity'
     | '/account/devices'
     | '/account/privacy'
@@ -220,8 +240,10 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/developer/applications'
     | '/developer/keys'
+    | '/organizations/$slug'
     | '/account'
     | '/developer'
+    | '/organizations'
   id:
     | '__root__'
     | '/'
@@ -240,8 +262,10 @@ export interface FileRouteTypes {
     | '/_authenticated/account/security'
     | '/_authenticated/developer/applications'
     | '/_authenticated/developer/keys'
+    | '/_authenticated/organizations/$slug'
     | '/_authenticated/account/'
     | '/_authenticated/developer/'
+    | '/_authenticated/organizations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -381,6 +405,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDeveloperKeysRouteImport
       parentRoute: typeof AuthenticatedDeveloperRoute
     }
+    '/_authenticated/organizations/': {
+      id: '/_authenticated/organizations/'
+      path: '/'
+      fullPath: '/organizations/'
+      preLoaderRoute: typeof AuthenticatedOrganizationsIndexRouteImport
+      parentRoute: typeof AuthenticatedOrganizationsRoute
+    }
+    '/_authenticated/organizations/$slug': {
+      id: '/_authenticated/organizations/$slug'
+      path: '/$slug'
+      fullPath: '/organizations/$slug'
+      preLoaderRoute: typeof AuthenticatedOrganizationsSlugRouteImport
+      parentRoute: typeof AuthenticatedOrganizationsRoute
+    }
   }
 }
 
@@ -424,16 +462,32 @@ const AuthenticatedDeveloperRouteWithChildren =
     AuthenticatedDeveloperRouteChildren,
   )
 
+interface AuthenticatedOrganizationsRouteChildren {
+  AuthenticatedOrganizationsSlugRoute: typeof AuthenticatedOrganizationsSlugRoute
+  AuthenticatedOrganizationsIndexRoute: typeof AuthenticatedOrganizationsIndexRoute
+}
+
+const AuthenticatedOrganizationsRouteChildren: AuthenticatedOrganizationsRouteChildren =
+  {
+    AuthenticatedOrganizationsSlugRoute: AuthenticatedOrganizationsSlugRoute,
+    AuthenticatedOrganizationsIndexRoute: AuthenticatedOrganizationsIndexRoute,
+  }
+
+const AuthenticatedOrganizationsRouteWithChildren =
+  AuthenticatedOrganizationsRoute._addFileChildren(
+    AuthenticatedOrganizationsRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRouteWithChildren
   AuthenticatedDeveloperRoute: typeof AuthenticatedDeveloperRouteWithChildren
-  AuthenticatedOrganizationsRoute: typeof AuthenticatedOrganizationsRoute
+  AuthenticatedOrganizationsRoute: typeof AuthenticatedOrganizationsRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRouteWithChildren,
   AuthenticatedDeveloperRoute: AuthenticatedDeveloperRouteWithChildren,
-  AuthenticatedOrganizationsRoute: AuthenticatedOrganizationsRoute,
+  AuthenticatedOrganizationsRoute: AuthenticatedOrganizationsRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =

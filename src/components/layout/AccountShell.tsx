@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
+  Building2,
   Boxes,
   KeyRound,
   LayoutDashboard,
@@ -34,6 +35,12 @@ const GROUPS = [
       { to: "/account/devices" as const, label: "Devices", icon: MonitorSmartphone, exact: false },
       { to: "/account/activity" as const, label: "Activity", icon: Activity, exact: false },
       { to: "/account/privacy" as const, label: "Privacy", icon: Lock, exact: false },
+    ],
+  },
+  {
+    title: "Teams",
+    items: [
+      { to: "/organizations" as const, label: "Organizations", icon: Building2, exact: false },
     ],
   },
   {

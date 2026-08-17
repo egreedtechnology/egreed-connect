@@ -19,6 +19,9 @@ const DESCRIPTION =
   "Sign in to your EGREED account, or create an EGREED ID to access every product in the ecosystem.";
 
 export const Route = createFileRoute("/auth")({
+  // Session state lives in browser storage, so render this screen client-side
+  // only — SSR would emit markup that never matches the hydrated result.
+  ssr: false,
   head: () => ({
     meta: [
       { title: TITLE },

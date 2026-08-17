@@ -101,6 +101,51 @@ export type Database = {
         }
         Relationships: []
       }
+      oauth_authorization_codes: {
+        Row: {
+          client_id: string
+          code_challenge: string | null
+          code_challenge_method: string | null
+          code_hash: string
+          created_at: string
+          expires_at: string
+          id: string
+          nonce: string | null
+          redirect_uri: string
+          scopes: string[]
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          code_challenge?: string | null
+          code_challenge_method?: string | null
+          code_hash: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          nonce?: string | null
+          redirect_uri: string
+          scopes?: string[]
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          code_challenge?: string | null
+          code_challenge_method?: string | null
+          code_hash?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          nonce?: string | null
+          redirect_uri?: string
+          scopes?: string[]
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       oauth_clients: {
         Row: {
           client_id: string
@@ -152,6 +197,108 @@ export type Database = {
           scopes?: string[]
           secret_last_four?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      oauth_consents: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          scopes: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          scopes?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          scopes?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      oauth_signing_keys: {
+        Row: {
+          alg: string
+          created_at: string
+          id: string
+          is_active: boolean
+          kid: string
+          private_jwk: Json
+          public_jwk: Json
+        }
+        Insert: {
+          alg?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kid: string
+          private_jwk: Json
+          public_jwk: Json
+        }
+        Update: {
+          alg?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kid?: string
+          private_jwk?: Json
+          public_jwk?: Json
+        }
+        Relationships: []
+      }
+      oauth_tokens: {
+        Row: {
+          access_token_hash: string
+          client_id: string
+          created_at: string
+          expires_at: string
+          grant_type: string
+          id: string
+          last_used_at: string | null
+          refresh_expires_at: string | null
+          refresh_token_hash: string | null
+          revoked_at: string | null
+          scopes: string[]
+          user_id: string | null
+        }
+        Insert: {
+          access_token_hash: string
+          client_id: string
+          created_at?: string
+          expires_at: string
+          grant_type?: string
+          id?: string
+          last_used_at?: string | null
+          refresh_expires_at?: string | null
+          refresh_token_hash?: string | null
+          revoked_at?: string | null
+          scopes?: string[]
+          user_id?: string | null
+        }
+        Update: {
+          access_token_hash?: string
+          client_id?: string
+          created_at?: string
+          expires_at?: string
+          grant_type?: string
+          id?: string
+          last_used_at?: string | null
+          refresh_expires_at?: string | null
+          refresh_token_hash?: string | null
+          revoked_at?: string | null
+          scopes?: string[]
+          user_id?: string | null
         }
         Relationships: []
       }

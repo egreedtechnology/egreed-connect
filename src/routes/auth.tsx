@@ -18,10 +18,18 @@ const TITLE = "Sign in — EGREED Identity";
 const DESCRIPTION =
   "Sign in to your EGREED account, or create an EGREED ID to access every product in the ecosystem.";
 
+/** Only same-origin relative paths may be used as a post-sign-in destination. */
+function safeNext(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  if (!value.startsWith("/") || value.startsWith("//")) return undefined;
+  return value;
+}
+
 export const Route = createFileRoute("/auth")({
   // Session state lives in browser storage, so render this screen client-side
   // only — SSR would emit markup that never matches the hydrated result.
   ssr: false,
+  validateSearch: (search: Record<string, unknown>) => ({ next: safeNext(search["next"]) }),
   head: () => ({
     meta: [
       { title: TITLE },

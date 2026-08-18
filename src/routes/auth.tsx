@@ -29,7 +29,10 @@ export const Route = createFileRoute("/auth")({
   // Session state lives in browser storage, so render this screen client-side
   // only — SSR would emit markup that never matches the hydrated result.
   ssr: false,
-  validateSearch: (search: Record<string, unknown>) => ({ next: safeNext(search["next"]) }),
+  validateSearch: (search: Record<string, unknown>): { next?: string } => {
+    const next = safeNext(search["next"]);
+    return next ? { next } : {};
+  },
   head: () => ({
     meta: [
       { title: TITLE },

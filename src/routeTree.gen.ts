@@ -29,6 +29,7 @@ import { Route as AuthenticatedDeveloperApplicationsRouteImport } from './routes
 import { Route as AuthenticatedDeveloperKeysRouteImport } from './routes/_authenticated/developer.keys'
 import { Route as AuthenticatedOrganizationsIndexRouteImport } from './routes/_authenticated/organizations.index'
 import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_authenticated/organizations.$slug'
+import { Route as ApiPublicOauthIntrospectRouteImport } from './routes/api/public/oauth/introspect'
 import { Route as ApiPublicOauthJwksRouteImport } from './routes/api/public/oauth/jwks'
 import { Route as ApiPublicOauthOpenidConfigurationRouteImport } from './routes/api/public/oauth/openid-configuration'
 import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oauth/token'
@@ -145,6 +146,12 @@ const AuthenticatedOrganizationsSlugRoute =
     path: '/$slug',
     getParentRoute: () => AuthenticatedOrganizationsRoute,
   } as any)
+const ApiPublicOauthIntrospectRoute =
+  ApiPublicOauthIntrospectRouteImport.update({
+    id: '/api/public/oauth/introspect',
+    path: '/api/public/oauth/introspect',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicOauthJwksRoute = ApiPublicOauthJwksRouteImport.update({
   id: '/api/public/oauth/jwks',
   path: '/api/public/oauth/jwks',
@@ -187,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/developer/': typeof AuthenticatedDeveloperIndexRoute
   '/organizations/': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/introspect': typeof ApiPublicOauthIntrospectRoute
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
@@ -209,6 +217,7 @@ export interface FileRoutesByTo {
   '/account': typeof AuthenticatedAccountIndexRoute
   '/developer': typeof AuthenticatedDeveloperIndexRoute
   '/organizations': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/introspect': typeof ApiPublicOauthIntrospectRoute
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
@@ -236,6 +245,7 @@ export interface FileRoutesById {
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/developer/': typeof AuthenticatedDeveloperIndexRoute
   '/_authenticated/organizations/': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/introspect': typeof ApiPublicOauthIntrospectRoute
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/account/'
     | '/developer/'
     | '/organizations/'
+    | '/api/public/oauth/introspect'
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
     | '/api/public/oauth/token'
@@ -285,6 +296,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/developer'
     | '/organizations'
+    | '/api/public/oauth/introspect'
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
     | '/api/public/oauth/token'
@@ -311,6 +323,7 @@ export interface FileRouteTypes {
     | '/_authenticated/account/'
     | '/_authenticated/developer/'
     | '/_authenticated/organizations/'
+    | '/api/public/oauth/introspect'
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
     | '/api/public/oauth/token'
@@ -324,6 +337,7 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   StatusRoute: typeof StatusRoute
+  ApiPublicOauthIntrospectRoute: typeof ApiPublicOauthIntrospectRoute
   ApiPublicOauthJwksRoute: typeof ApiPublicOauthJwksRoute
   ApiPublicOauthOpenidConfigurationRoute: typeof ApiPublicOauthOpenidConfigurationRoute
   ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute
@@ -472,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganizationsSlugRouteImport
       parentRoute: typeof AuthenticatedOrganizationsRoute
     }
+    '/api/public/oauth/introspect': {
+      id: '/api/public/oauth/introspect'
+      path: '/api/public/oauth/introspect'
+      fullPath: '/api/public/oauth/introspect'
+      preLoaderRoute: typeof ApiPublicOauthIntrospectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/oauth/jwks': {
       id: '/api/public/oauth/jwks'
       path: '/api/public/oauth/jwks'
@@ -581,6 +602,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   StatusRoute: StatusRoute,
+  ApiPublicOauthIntrospectRoute: ApiPublicOauthIntrospectRoute,
   ApiPublicOauthJwksRoute: ApiPublicOauthJwksRoute,
   ApiPublicOauthOpenidConfigurationRoute:
     ApiPublicOauthOpenidConfigurationRoute,

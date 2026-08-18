@@ -29,6 +29,12 @@ import { Route as AuthenticatedDeveloperApplicationsRouteImport } from './routes
 import { Route as AuthenticatedDeveloperKeysRouteImport } from './routes/_authenticated/developer.keys'
 import { Route as AuthenticatedOrganizationsIndexRouteImport } from './routes/_authenticated/organizations.index'
 import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_authenticated/organizations.$slug'
+import { Route as ApiPublicOauthIntrospectRouteImport } from './routes/api/public/oauth/introspect'
+import { Route as ApiPublicOauthJwksRouteImport } from './routes/api/public/oauth/jwks'
+import { Route as ApiPublicOauthOpenidConfigurationRouteImport } from './routes/api/public/oauth/openid-configuration'
+import { Route as ApiPublicOauthRevokeRouteImport } from './routes/api/public/oauth/revoke'
+import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oauth/token'
+import { Route as ApiPublicOauthUserinfoRouteImport } from './routes/api/public/oauth/userinfo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -141,6 +147,38 @@ const AuthenticatedOrganizationsSlugRoute =
     path: '/$slug',
     getParentRoute: () => AuthenticatedOrganizationsRoute,
   } as any)
+const ApiPublicOauthIntrospectRoute =
+  ApiPublicOauthIntrospectRouteImport.update({
+    id: '/api/public/oauth/introspect',
+    path: '/api/public/oauth/introspect',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicOauthJwksRoute = ApiPublicOauthJwksRouteImport.update({
+  id: '/api/public/oauth/jwks',
+  path: '/api/public/oauth/jwks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicOauthOpenidConfigurationRoute =
+  ApiPublicOauthOpenidConfigurationRouteImport.update({
+    id: '/api/public/oauth/openid-configuration',
+    path: '/api/public/oauth/openid-configuration',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicOauthRevokeRoute = ApiPublicOauthRevokeRouteImport.update({
+  id: '/api/public/oauth/revoke',
+  path: '/api/public/oauth/revoke',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicOauthTokenRoute = ApiPublicOauthTokenRouteImport.update({
+  id: '/api/public/oauth/token',
+  path: '/api/public/oauth/token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicOauthUserinfoRoute = ApiPublicOauthUserinfoRouteImport.update({
+  id: '/api/public/oauth/userinfo',
+  path: '/api/public/oauth/userinfo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -162,6 +200,12 @@ export interface FileRoutesByFullPath {
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/developer/': typeof AuthenticatedDeveloperIndexRoute
   '/organizations/': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/introspect': typeof ApiPublicOauthIntrospectRoute
+  '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
+  '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
+  '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
+  '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
+  '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -180,6 +224,12 @@ export interface FileRoutesByTo {
   '/account': typeof AuthenticatedAccountIndexRoute
   '/developer': typeof AuthenticatedDeveloperIndexRoute
   '/organizations': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/introspect': typeof ApiPublicOauthIntrospectRoute
+  '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
+  '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
+  '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
+  '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
+  '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -203,6 +253,12 @@ export interface FileRoutesById {
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/developer/': typeof AuthenticatedDeveloperIndexRoute
   '/_authenticated/organizations/': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/introspect': typeof ApiPublicOauthIntrospectRoute
+  '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
+  '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
+  '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
+  '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
+  '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -226,6 +282,12 @@ export interface FileRouteTypes {
     | '/account/'
     | '/developer/'
     | '/organizations/'
+    | '/api/public/oauth/introspect'
+    | '/api/public/oauth/jwks'
+    | '/api/public/oauth/openid-configuration'
+    | '/api/public/oauth/revoke'
+    | '/api/public/oauth/token'
+    | '/api/public/oauth/userinfo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -244,6 +306,12 @@ export interface FileRouteTypes {
     | '/account'
     | '/developer'
     | '/organizations'
+    | '/api/public/oauth/introspect'
+    | '/api/public/oauth/jwks'
+    | '/api/public/oauth/openid-configuration'
+    | '/api/public/oauth/revoke'
+    | '/api/public/oauth/token'
+    | '/api/public/oauth/userinfo'
   id:
     | '__root__'
     | '/'
@@ -266,6 +334,12 @@ export interface FileRouteTypes {
     | '/_authenticated/account/'
     | '/_authenticated/developer/'
     | '/_authenticated/organizations/'
+    | '/api/public/oauth/introspect'
+    | '/api/public/oauth/jwks'
+    | '/api/public/oauth/openid-configuration'
+    | '/api/public/oauth/revoke'
+    | '/api/public/oauth/token'
+    | '/api/public/oauth/userinfo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -275,6 +349,12 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   StatusRoute: typeof StatusRoute
+  ApiPublicOauthIntrospectRoute: typeof ApiPublicOauthIntrospectRoute
+  ApiPublicOauthJwksRoute: typeof ApiPublicOauthJwksRoute
+  ApiPublicOauthOpenidConfigurationRoute: typeof ApiPublicOauthOpenidConfigurationRoute
+  ApiPublicOauthRevokeRoute: typeof ApiPublicOauthRevokeRoute
+  ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute
+  ApiPublicOauthUserinfoRoute: typeof ApiPublicOauthUserinfoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -419,6 +499,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganizationsSlugRouteImport
       parentRoute: typeof AuthenticatedOrganizationsRoute
     }
+    '/api/public/oauth/introspect': {
+      id: '/api/public/oauth/introspect'
+      path: '/api/public/oauth/introspect'
+      fullPath: '/api/public/oauth/introspect'
+      preLoaderRoute: typeof ApiPublicOauthIntrospectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/oauth/jwks': {
+      id: '/api/public/oauth/jwks'
+      path: '/api/public/oauth/jwks'
+      fullPath: '/api/public/oauth/jwks'
+      preLoaderRoute: typeof ApiPublicOauthJwksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/oauth/openid-configuration': {
+      id: '/api/public/oauth/openid-configuration'
+      path: '/api/public/oauth/openid-configuration'
+      fullPath: '/api/public/oauth/openid-configuration'
+      preLoaderRoute: typeof ApiPublicOauthOpenidConfigurationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/oauth/revoke': {
+      id: '/api/public/oauth/revoke'
+      path: '/api/public/oauth/revoke'
+      fullPath: '/api/public/oauth/revoke'
+      preLoaderRoute: typeof ApiPublicOauthRevokeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/oauth/token': {
+      id: '/api/public/oauth/token'
+      path: '/api/public/oauth/token'
+      fullPath: '/api/public/oauth/token'
+      preLoaderRoute: typeof ApiPublicOauthTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/oauth/userinfo': {
+      id: '/api/public/oauth/userinfo'
+      path: '/api/public/oauth/userinfo'
+      fullPath: '/api/public/oauth/userinfo'
+      preLoaderRoute: typeof ApiPublicOauthUserinfoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -500,6 +622,13 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   StatusRoute: StatusRoute,
+  ApiPublicOauthIntrospectRoute: ApiPublicOauthIntrospectRoute,
+  ApiPublicOauthJwksRoute: ApiPublicOauthJwksRoute,
+  ApiPublicOauthOpenidConfigurationRoute:
+    ApiPublicOauthOpenidConfigurationRoute,
+  ApiPublicOauthRevokeRoute: ApiPublicOauthRevokeRoute,
+  ApiPublicOauthTokenRoute: ApiPublicOauthTokenRoute,
+  ApiPublicOauthUserinfoRoute: ApiPublicOauthUserinfoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

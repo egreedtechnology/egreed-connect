@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { EgreedLogo } from "@/components/brand/EgreedLogo";
@@ -18,10 +18,21 @@ const TITLE = "Sign in — EGREED Identity";
 const DESCRIPTION =
   "Sign in to your EGREED account, or create an EGREED ID to access every product in the ecosystem.";
 
+/** Only same-origin relative paths may be used as a post-sign-in destination. */
+function safeNext(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  if (!value.startsWith("/") || value.startsWith("//")) return undefined;
+  return value;
+}
+
 export const Route = createFileRoute("/auth")({
   // Session state lives in browser storage, so render this screen client-side
   // only — SSR would emit markup that never matches the hydrated result.
   ssr: false,
+  validateSearch: (search: Record<string, unknown>): { next?: string } => {
+    const next = safeNext(search["next"]);
+    return next ? { next } : {};
+  },
   head: () => ({
     meta: [
       { title: TITLE },
@@ -58,6 +69,7 @@ function GoogleMark() {
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const register = useServerFn(registerSession);
   const [pending, setPending] = useState<string | null>(null);
   const [mode, setMode] = useState("signin");
@@ -66,11 +78,21 @@ function AuthPage() {
   const [displayName, setDisplayName] = useState("");
   const [emailSent, setEmailSent] = useState(false);
 
+  // `next` carries an intended destination (e.g. an OAuth consent screen a
+  // third-party app sent the user to) through the whole sign-in flow.
+  const goNext = useCallback(() => {
+    if (next) {
+      window.location.replace(next);
+      return;
+    }
+    navigate({ to: "/account", replace: true });
+  }, [navigate, next]);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/account", replace: true });
+      if (data.session) goNext();
     });
-  }, [navigate]);
+  }, [goNext]);
 
   async function afterAuth(method: "password" | "oauth" | "signup") {
     try {
@@ -78,7 +100,7 @@ function AuthPage() {
     } catch {
       /* audit logging is best-effort and must never block sign-in */
     }
-    navigate({ to: "/account", replace: true });
+    goNext();
   }
 
   async function handleSignIn(event: React.FormEvent) {
@@ -105,7 +127,9 @@ function AuthPage() {
       email,
       password,
       options: {
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: next
+          ? `${window.location.origin}/auth?next=${encodeURIComponent(next)}`
+          : window.location.origin,
         data: { display_name: displayName },
       },
     });
@@ -125,7 +149,9 @@ function AuthPage() {
   async function handleGoogle() {
     setPending("google");
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: next
+        ? `${window.location.origin}/auth?next=${encodeURIComponent(next)}`
+        : window.location.origin,
     });
     if (result.error) {
       setPending(null);

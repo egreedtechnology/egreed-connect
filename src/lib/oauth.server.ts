@@ -160,15 +160,16 @@ export async function getSigningKey(): Promise<SigningKey> {
     .maybeSingle();
 
   if (existing) {
-    cachedKey = {
+    const restored: SigningKey = {
       kid: existing.kid,
-      publicJwk: existing.public_jwk as JsonWebKey,
-      privateJwk: existing.private_jwk as JsonWebKey,
+      publicJwk: existing.public_jwk as Jwk,
+      privateJwk: existing.private_jwk as Jwk,
     };
-    return cachedKey;
+    cachedKey = restored;
+    return restored;
   }
 
-  const pair = await crypto.subtle.generateKey(
+  const pair = (await crypto.subtle.generateKey(
     {
       name: "RSASSA-PKCS1-v1_5",
       modulusLength: 2048,
@@ -177,38 +178,41 @@ export async function getSigningKey(): Promise<SigningKey> {
     },
     true,
     ["sign", "verify"],
-  );
-  const publicJwk = (await crypto.subtle.exportKey("jwk", pair.publicKey)) as JsonWebKey;
-  const privateJwk = (await crypto.subtle.exportKey("jwk", pair.privateKey)) as JsonWebKey;
+  )) as CryptoKeyPair;
+  const exportedPublic = (await crypto.subtle.exportKey("jwk", pair.publicKey)) as Jwk;
+  const exportedPrivate = (await crypto.subtle.exportKey("jwk", pair.privateKey)) as Jwk;
   const kid = opaqueToken(8);
+
+  const created: SigningKey = {
+    kid,
+    publicJwk: { ...exportedPublic, kid, alg: "RS256", use: "sig" },
+    privateJwk: { ...exportedPrivate, kid, alg: "RS256" },
+  };
 
   await db.from("oauth_signing_keys").insert({
     kid,
     alg: "RS256",
-    public_jwk: { ...publicJwk, kid, alg: "RS256", use: "sig" } as never,
-    private_jwk: { ...privateJwk, kid, alg: "RS256" } as never,
+    public_jwk: created.publicJwk as never,
+    private_jwk: created.privateJwk as never,
   });
 
-  cachedKey = {
-    kid,
-    publicJwk: { ...publicJwk, kid, alg: "RS256", use: "sig" },
-    privateJwk: { ...privateJwk, kid, alg: "RS256" },
-  };
-  return cachedKey;
+  cachedKey = created;
+  return created;
 }
 
-export async function publicJwks(): Promise<{ keys: JsonWebKey[] }> {
+export async function publicJwks(): Promise<{ keys: Jwk[] }> {
   const db = await admin();
   const { data } = await db
     .from("oauth_signing_keys")
     .select("public_jwk")
     .eq("is_active", true)
     .order("created_at", { ascending: false });
-  const keys = (data ?? []).map((row) => row.public_jwk as JsonWebKey);
+  const keys = (data ?? []).map((row) => row.public_jwk as Jwk);
   if (keys.length > 0) return { keys };
   const key = await getSigningKey();
   return { keys: [key.publicJwk] };
 }
+
 
 export async function signJwt(payload: Record<string, unknown>): Promise<string> {
   const key = await getSigningKey();

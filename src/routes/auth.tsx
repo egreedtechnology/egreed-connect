@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { EgreedLogo } from "@/components/brand/EgreedLogo";
@@ -127,7 +127,9 @@ function AuthPage() {
       email,
       password,
       options: {
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: next
+          ? `${window.location.origin}/auth?next=${encodeURIComponent(next)}`
+          : window.location.origin,
         data: { display_name: displayName },
       },
     });
@@ -147,7 +149,9 @@ function AuthPage() {
   async function handleGoogle() {
     setPending("google");
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: next
+        ? `${window.location.origin}/auth?next=${encodeURIComponent(next)}`
+        : window.location.origin,
     });
     if (result.error) {
       setPending(null);

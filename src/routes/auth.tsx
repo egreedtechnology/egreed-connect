@@ -69,6 +69,7 @@ function GoogleMark() {
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const register = useServerFn(registerSession);
   const [pending, setPending] = useState<string | null>(null);
   const [mode, setMode] = useState("signin");
@@ -77,11 +78,21 @@ function AuthPage() {
   const [displayName, setDisplayName] = useState("");
   const [emailSent, setEmailSent] = useState(false);
 
+  // `next` carries an intended destination (e.g. an OAuth consent screen a
+  // third-party app sent the user to) through the whole sign-in flow.
+  const goNext = useCallback(() => {
+    if (next) {
+      window.location.replace(next);
+      return;
+    }
+    navigate({ to: "/account", replace: true });
+  }, [navigate, next]);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/account", replace: true });
+      if (data.session) goNext();
     });
-  }, [navigate]);
+  }, [goNext]);
 
   async function afterAuth(method: "password" | "oauth" | "signup") {
     try {
@@ -89,7 +100,7 @@ function AuthPage() {
     } catch {
       /* audit logging is best-effort and must never block sign-in */
     }
-    navigate({ to: "/account", replace: true });
+    goNext();
   }
 
   async function handleSignIn(event: React.FormEvent) {

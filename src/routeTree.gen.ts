@@ -29,6 +29,7 @@ import { Route as AuthenticatedDeveloperApplicationsRouteImport } from './routes
 import { Route as AuthenticatedDeveloperKeysRouteImport } from './routes/_authenticated/developer.keys'
 import { Route as AuthenticatedOrganizationsIndexRouteImport } from './routes/_authenticated/organizations.index'
 import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_authenticated/organizations.$slug'
+import { Route as ApiPublicOauthOpenidConfigurationRouteImport } from './routes/api/public/oauth/openid-configuration'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -141,6 +142,12 @@ const AuthenticatedOrganizationsSlugRoute =
     path: '/$slug',
     getParentRoute: () => AuthenticatedOrganizationsRoute,
   } as any)
+const ApiPublicOauthOpenidConfigurationRoute =
+  ApiPublicOauthOpenidConfigurationRouteImport.update({
+    id: '/api/public/oauth/openid-configuration',
+    path: '/api/public/oauth/openid-configuration',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/developer/': typeof AuthenticatedDeveloperIndexRoute
   '/organizations/': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -180,6 +188,7 @@ export interface FileRoutesByTo {
   '/account': typeof AuthenticatedAccountIndexRoute
   '/developer': typeof AuthenticatedDeveloperIndexRoute
   '/organizations': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -203,6 +212,7 @@ export interface FileRoutesById {
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/developer/': typeof AuthenticatedDeveloperIndexRoute
   '/_authenticated/organizations/': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/account/'
     | '/developer/'
     | '/organizations/'
+    | '/api/public/oauth/openid-configuration'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -244,6 +255,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/developer'
     | '/organizations'
+    | '/api/public/oauth/openid-configuration'
   id:
     | '__root__'
     | '/'
@@ -266,6 +278,7 @@ export interface FileRouteTypes {
     | '/_authenticated/account/'
     | '/_authenticated/developer/'
     | '/_authenticated/organizations/'
+    | '/api/public/oauth/openid-configuration'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -275,6 +288,7 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   StatusRoute: typeof StatusRoute
+  ApiPublicOauthOpenidConfigurationRoute: typeof ApiPublicOauthOpenidConfigurationRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -419,6 +433,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganizationsSlugRouteImport
       parentRoute: typeof AuthenticatedOrganizationsRoute
     }
+    '/api/public/oauth/openid-configuration': {
+      id: '/api/public/oauth/openid-configuration'
+      path: '/api/public/oauth/openid-configuration'
+      fullPath: '/api/public/oauth/openid-configuration'
+      preLoaderRoute: typeof ApiPublicOauthOpenidConfigurationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -500,6 +521,8 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   StatusRoute: StatusRoute,
+  ApiPublicOauthOpenidConfigurationRoute:
+    ApiPublicOauthOpenidConfigurationRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

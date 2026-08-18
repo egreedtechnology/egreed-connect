@@ -29,6 +29,7 @@ import { Route as AuthenticatedDeveloperApplicationsRouteImport } from './routes
 import { Route as AuthenticatedDeveloperKeysRouteImport } from './routes/_authenticated/developer.keys'
 import { Route as AuthenticatedOrganizationsIndexRouteImport } from './routes/_authenticated/organizations.index'
 import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_authenticated/organizations.$slug'
+import { Route as ApiPublicOauthJwksRouteImport } from './routes/api/public/oauth/jwks'
 import { Route as ApiPublicOauthOpenidConfigurationRouteImport } from './routes/api/public/oauth/openid-configuration'
 
 const IndexRoute = IndexRouteImport.update({
@@ -142,6 +143,11 @@ const AuthenticatedOrganizationsSlugRoute =
     path: '/$slug',
     getParentRoute: () => AuthenticatedOrganizationsRoute,
   } as any)
+const ApiPublicOauthJwksRoute = ApiPublicOauthJwksRouteImport.update({
+  id: '/api/public/oauth/jwks',
+  path: '/api/public/oauth/jwks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicOauthOpenidConfigurationRoute =
   ApiPublicOauthOpenidConfigurationRouteImport.update({
     id: '/api/public/oauth/openid-configuration',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/developer/': typeof AuthenticatedDeveloperIndexRoute
   '/organizations/': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
 }
 export interface FileRoutesByTo {
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/account': typeof AuthenticatedAccountIndexRoute
   '/developer': typeof AuthenticatedDeveloperIndexRoute
   '/organizations': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
 }
 export interface FileRoutesById {
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/developer/': typeof AuthenticatedDeveloperIndexRoute
   '/_authenticated/organizations/': typeof AuthenticatedOrganizationsIndexRoute
+  '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
 }
 export interface FileRouteTypes {
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/account/'
     | '/developer/'
     | '/organizations/'
+    | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -255,6 +265,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/developer'
     | '/organizations'
+    | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
   id:
     | '__root__'
@@ -278,6 +289,7 @@ export interface FileRouteTypes {
     | '/_authenticated/account/'
     | '/_authenticated/developer/'
     | '/_authenticated/organizations/'
+    | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
   fileRoutesById: FileRoutesById
 }
@@ -288,6 +300,7 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   StatusRoute: typeof StatusRoute
+  ApiPublicOauthJwksRoute: typeof ApiPublicOauthJwksRoute
   ApiPublicOauthOpenidConfigurationRoute: typeof ApiPublicOauthOpenidConfigurationRoute
 }
 
@@ -433,6 +446,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganizationsSlugRouteImport
       parentRoute: typeof AuthenticatedOrganizationsRoute
     }
+    '/api/public/oauth/jwks': {
+      id: '/api/public/oauth/jwks'
+      path: '/api/public/oauth/jwks'
+      fullPath: '/api/public/oauth/jwks'
+      preLoaderRoute: typeof ApiPublicOauthJwksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/oauth/openid-configuration': {
       id: '/api/public/oauth/openid-configuration'
       path: '/api/public/oauth/openid-configuration'
@@ -521,6 +541,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   StatusRoute: StatusRoute,
+  ApiPublicOauthJwksRoute: ApiPublicOauthJwksRoute,
   ApiPublicOauthOpenidConfigurationRoute:
     ApiPublicOauthOpenidConfigurationRoute,
 }

@@ -32,6 +32,7 @@ import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_au
 import { Route as ApiPublicOauthIntrospectRouteImport } from './routes/api/public/oauth/introspect'
 import { Route as ApiPublicOauthJwksRouteImport } from './routes/api/public/oauth/jwks'
 import { Route as ApiPublicOauthOpenidConfigurationRouteImport } from './routes/api/public/oauth/openid-configuration'
+import { Route as ApiPublicOauthRevokeRouteImport } from './routes/api/public/oauth/revoke'
 import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oauth/token'
 import { Route as ApiPublicOauthUserinfoRouteImport } from './routes/api/public/oauth/userinfo'
 
@@ -163,6 +164,11 @@ const ApiPublicOauthOpenidConfigurationRoute =
     path: '/api/public/oauth/openid-configuration',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicOauthRevokeRoute = ApiPublicOauthRevokeRouteImport.update({
+  id: '/api/public/oauth/revoke',
+  path: '/api/public/oauth/revoke',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicOauthTokenRoute = ApiPublicOauthTokenRouteImport.update({
   id: '/api/public/oauth/token',
   path: '/api/public/oauth/token',
@@ -197,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/api/public/oauth/introspect': typeof ApiPublicOauthIntrospectRoute
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
+  '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
 }
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/api/public/oauth/introspect': typeof ApiPublicOauthIntrospectRoute
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
+  '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
 }
@@ -248,6 +256,7 @@ export interface FileRoutesById {
   '/api/public/oauth/introspect': typeof ApiPublicOauthIntrospectRoute
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
+  '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
 }
@@ -276,6 +285,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/introspect'
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
+    | '/api/public/oauth/revoke'
     | '/api/public/oauth/token'
     | '/api/public/oauth/userinfo'
   fileRoutesByTo: FileRoutesByTo
@@ -299,6 +309,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/introspect'
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
+    | '/api/public/oauth/revoke'
     | '/api/public/oauth/token'
     | '/api/public/oauth/userinfo'
   id:
@@ -326,6 +337,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/introspect'
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
+    | '/api/public/oauth/revoke'
     | '/api/public/oauth/token'
     | '/api/public/oauth/userinfo'
   fileRoutesById: FileRoutesById
@@ -340,6 +352,7 @@ export interface RootRouteChildren {
   ApiPublicOauthIntrospectRoute: typeof ApiPublicOauthIntrospectRoute
   ApiPublicOauthJwksRoute: typeof ApiPublicOauthJwksRoute
   ApiPublicOauthOpenidConfigurationRoute: typeof ApiPublicOauthOpenidConfigurationRoute
+  ApiPublicOauthRevokeRoute: typeof ApiPublicOauthRevokeRoute
   ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute
   ApiPublicOauthUserinfoRoute: typeof ApiPublicOauthUserinfoRoute
 }
@@ -507,6 +520,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicOauthOpenidConfigurationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/oauth/revoke': {
+      id: '/api/public/oauth/revoke'
+      path: '/api/public/oauth/revoke'
+      fullPath: '/api/public/oauth/revoke'
+      preLoaderRoute: typeof ApiPublicOauthRevokeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/oauth/token': {
       id: '/api/public/oauth/token'
       path: '/api/public/oauth/token'
@@ -606,6 +626,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicOauthJwksRoute: ApiPublicOauthJwksRoute,
   ApiPublicOauthOpenidConfigurationRoute:
     ApiPublicOauthOpenidConfigurationRoute,
+  ApiPublicOauthRevokeRoute: ApiPublicOauthRevokeRoute,
   ApiPublicOauthTokenRoute: ApiPublicOauthTokenRoute,
   ApiPublicOauthUserinfoRoute: ApiPublicOauthUserinfoRoute,
 }

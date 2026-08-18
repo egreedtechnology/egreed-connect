@@ -137,7 +137,8 @@ export async function readRequestParams(request: Request): Promise<Record<string
 
 /* ------------------------------------------------------- signing keys / JWT */
 
-type SigningKey = { kid: string; privateJwk: JsonWebKey; publicJwk: JsonWebKey };
+type Jwk = JsonWebKey & { kid?: string; use?: string };
+type SigningKey = { kid: string; privateJwk: Jwk; publicJwk: Jwk };
 
 let cachedKey: SigningKey | null = null;
 

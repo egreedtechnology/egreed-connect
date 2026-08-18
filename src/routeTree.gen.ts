@@ -32,6 +32,7 @@ import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_au
 import { Route as ApiPublicOauthJwksRouteImport } from './routes/api/public/oauth/jwks'
 import { Route as ApiPublicOauthOpenidConfigurationRouteImport } from './routes/api/public/oauth/openid-configuration'
 import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oauth/token'
+import { Route as ApiPublicOauthUserinfoRouteImport } from './routes/api/public/oauth/userinfo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -160,6 +161,11 @@ const ApiPublicOauthTokenRoute = ApiPublicOauthTokenRouteImport.update({
   path: '/api/public/oauth/token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicOauthUserinfoRoute = ApiPublicOauthUserinfoRouteImport.update({
+  id: '/api/public/oauth/userinfo',
+  path: '/api/public/oauth/userinfo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
+  '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
+  '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -231,6 +239,7 @@ export interface FileRoutesById {
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
+  '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -257,6 +266,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
     | '/api/public/oauth/token'
+    | '/api/public/oauth/userinfo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -278,6 +288,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
     | '/api/public/oauth/token'
+    | '/api/public/oauth/userinfo'
   id:
     | '__root__'
     | '/'
@@ -303,6 +314,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
     | '/api/public/oauth/token'
+    | '/api/public/oauth/userinfo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -315,6 +327,7 @@ export interface RootRouteChildren {
   ApiPublicOauthJwksRoute: typeof ApiPublicOauthJwksRoute
   ApiPublicOauthOpenidConfigurationRoute: typeof ApiPublicOauthOpenidConfigurationRoute
   ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute
+  ApiPublicOauthUserinfoRoute: typeof ApiPublicOauthUserinfoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -480,6 +493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicOauthTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/oauth/userinfo': {
+      id: '/api/public/oauth/userinfo'
+      path: '/api/public/oauth/userinfo'
+      fullPath: '/api/public/oauth/userinfo'
+      preLoaderRoute: typeof ApiPublicOauthUserinfoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -565,6 +585,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicOauthOpenidConfigurationRoute:
     ApiPublicOauthOpenidConfigurationRoute,
   ApiPublicOauthTokenRoute: ApiPublicOauthTokenRoute,
+  ApiPublicOauthUserinfoRoute: ApiPublicOauthUserinfoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

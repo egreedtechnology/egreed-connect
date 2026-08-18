@@ -31,6 +31,7 @@ import { Route as AuthenticatedOrganizationsIndexRouteImport } from './routes/_a
 import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_authenticated/organizations.$slug'
 import { Route as ApiPublicOauthJwksRouteImport } from './routes/api/public/oauth/jwks'
 import { Route as ApiPublicOauthOpenidConfigurationRouteImport } from './routes/api/public/oauth/openid-configuration'
+import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oauth/token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -154,6 +155,11 @@ const ApiPublicOauthOpenidConfigurationRoute =
     path: '/api/public/oauth/openid-configuration',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicOauthTokenRoute = ApiPublicOauthTokenRouteImport.update({
+  id: '/api/public/oauth/token',
+  path: '/api/public/oauth/token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -177,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/organizations/': typeof AuthenticatedOrganizationsIndexRoute
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
+  '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -197,6 +204,7 @@ export interface FileRoutesByTo {
   '/organizations': typeof AuthenticatedOrganizationsIndexRoute
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
+  '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -222,6 +230,7 @@ export interface FileRoutesById {
   '/_authenticated/organizations/': typeof AuthenticatedOrganizationsIndexRoute
   '/api/public/oauth/jwks': typeof ApiPublicOauthJwksRoute
   '/api/public/oauth/openid-configuration': typeof ApiPublicOauthOpenidConfigurationRoute
+  '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -247,6 +256,7 @@ export interface FileRouteTypes {
     | '/organizations/'
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
+    | '/api/public/oauth/token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
+    | '/api/public/oauth/token'
   id:
     | '__root__'
     | '/'
@@ -291,6 +302,7 @@ export interface FileRouteTypes {
     | '/_authenticated/organizations/'
     | '/api/public/oauth/jwks'
     | '/api/public/oauth/openid-configuration'
+    | '/api/public/oauth/token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -302,6 +314,7 @@ export interface RootRouteChildren {
   StatusRoute: typeof StatusRoute
   ApiPublicOauthJwksRoute: typeof ApiPublicOauthJwksRoute
   ApiPublicOauthOpenidConfigurationRoute: typeof ApiPublicOauthOpenidConfigurationRoute
+  ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -460,6 +473,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicOauthOpenidConfigurationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/oauth/token': {
+      id: '/api/public/oauth/token'
+      path: '/api/public/oauth/token'
+      fullPath: '/api/public/oauth/token'
+      preLoaderRoute: typeof ApiPublicOauthTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -544,6 +564,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicOauthJwksRoute: ApiPublicOauthJwksRoute,
   ApiPublicOauthOpenidConfigurationRoute:
     ApiPublicOauthOpenidConfigurationRoute,
+  ApiPublicOauthTokenRoute: ApiPublicOauthTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

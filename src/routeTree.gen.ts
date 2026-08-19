@@ -36,6 +36,7 @@ import { Route as ApiPublicOauthOpenidConfigurationRouteImport } from './routes/
 import { Route as ApiPublicOauthRevokeRouteImport } from './routes/api/public/oauth/revoke'
 import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oauth/token'
 import { Route as ApiPublicOauthUserinfoRouteImport } from './routes/api/public/oauth/userinfo'
+import { Route as ApiPublicV1MeRouteImport } from './routes/api/public/v1/me'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -185,6 +186,11 @@ const ApiPublicOauthUserinfoRoute = ApiPublicOauthUserinfoRouteImport.update({
   path: '/api/public/oauth/userinfo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1MeRoute = ApiPublicV1MeRouteImport.update({
+  id: '/api/public/v1/me',
+  path: '/api/public/v1/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -213,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
+  '/api/public/v1/me': typeof ApiPublicV1MeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -238,6 +245,7 @@ export interface FileRoutesByTo {
   '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
+  '/api/public/v1/me': typeof ApiPublicV1MeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -268,6 +276,7 @@ export interface FileRoutesById {
   '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
+  '/api/public/v1/me': typeof ApiPublicV1MeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -298,6 +307,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/revoke'
     | '/api/public/oauth/token'
     | '/api/public/oauth/userinfo'
+    | '/api/public/v1/me'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -323,6 +333,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/revoke'
     | '/api/public/oauth/token'
     | '/api/public/oauth/userinfo'
+    | '/api/public/v1/me'
   id:
     | '__root__'
     | '/'
@@ -352,6 +363,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/revoke'
     | '/api/public/oauth/token'
     | '/api/public/oauth/userinfo'
+    | '/api/public/v1/me'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -368,6 +380,7 @@ export interface RootRouteChildren {
   ApiPublicOauthRevokeRoute: typeof ApiPublicOauthRevokeRoute
   ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute
   ApiPublicOauthUserinfoRoute: typeof ApiPublicOauthUserinfoRoute
+  ApiPublicV1MeRoute: typeof ApiPublicV1MeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -561,6 +574,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicOauthUserinfoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/me': {
+      id: '/api/public/v1/me'
+      path: '/api/public/v1/me'
+      fullPath: '/api/public/v1/me'
+      preLoaderRoute: typeof ApiPublicV1MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -650,6 +670,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicOauthRevokeRoute: ApiPublicOauthRevokeRoute,
   ApiPublicOauthTokenRoute: ApiPublicOauthTokenRoute,
   ApiPublicOauthUserinfoRoute: ApiPublicOauthUserinfoRoute,
+  ApiPublicV1MeRoute: ApiPublicV1MeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

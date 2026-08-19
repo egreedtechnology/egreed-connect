@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as StatusRouteImport } from './routes/status'
+import { Route as DotwellKnownOpenidConfigurationRouteImport } from './routes/[.]well-known.openid-configuration'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authenticated/developer'
 import { Route as AuthenticatedOrganizationsRouteImport } from './routes/_authenticated/organizations'
@@ -68,6 +69,12 @@ const StatusRoute = StatusRouteImport.update({
   path: '/status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DotwellKnownOpenidConfigurationRoute =
+  DotwellKnownOpenidConfigurationRouteImport.update({
+    id: '/.well-known/openid-configuration',
+    path: '/.well-known/openid-configuration',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
   id: '/account',
   path: '/account',
@@ -205,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/docs': typeof DocsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/status': typeof StatusRoute
+  '/.well-known/openid-configuration': typeof DotwellKnownOpenidConfigurationRoute
   '/account': typeof AuthenticatedAccountRouteWithChildren
   '/developer': typeof AuthenticatedDeveloperRouteWithChildren
   '/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
@@ -235,6 +243,7 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/status': typeof StatusRoute
+  '/.well-known/openid-configuration': typeof DotwellKnownOpenidConfigurationRoute
   '/oauth/authorize': typeof OauthAuthorizeRoute
   '/account/activity': typeof AuthenticatedAccountActivityRoute
   '/account/devices': typeof AuthenticatedAccountDevicesRoute
@@ -264,6 +273,7 @@ export interface FileRoutesById {
   '/docs': typeof DocsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/status': typeof StatusRoute
+  '/.well-known/openid-configuration': typeof DotwellKnownOpenidConfigurationRoute
   '/_authenticated/account': typeof AuthenticatedAccountRouteWithChildren
   '/_authenticated/developer': typeof AuthenticatedDeveloperRouteWithChildren
   '/_authenticated/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/reset-password'
     | '/status'
+    | '/.well-known/openid-configuration'
     | '/account'
     | '/developer'
     | '/organizations'
@@ -326,6 +337,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/reset-password'
     | '/status'
+    | '/.well-known/openid-configuration'
     | '/oauth/authorize'
     | '/account/activity'
     | '/account/devices'
@@ -354,6 +366,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/reset-password'
     | '/status'
+    | '/.well-known/openid-configuration'
     | '/_authenticated/account'
     | '/_authenticated/developer'
     | '/_authenticated/organizations'
@@ -386,6 +399,7 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   StatusRoute: typeof StatusRoute
+  DotwellKnownOpenidConfigurationRoute: typeof DotwellKnownOpenidConfigurationRoute
   OauthAuthorizeRoute: typeof OauthAuthorizeRoute
   ApiPublicOauthIntrospectRoute: typeof ApiPublicOauthIntrospectRoute
   ApiPublicOauthJwksRoute: typeof ApiPublicOauthJwksRoute
@@ -439,6 +453,13 @@ declare module '@tanstack/react-router' {
       path: '/status'
       fullPath: '/status'
       preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/openid-configuration': {
+      id: '/.well-known/openid-configuration'
+      path: '/.well-known/openid-configuration'
+      fullPath: '/.well-known/openid-configuration'
+      preLoaderRoute: typeof DotwellKnownOpenidConfigurationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/account': {
@@ -683,6 +704,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   StatusRoute: StatusRoute,
+  DotwellKnownOpenidConfigurationRoute: DotwellKnownOpenidConfigurationRoute,
   OauthAuthorizeRoute: OauthAuthorizeRoute,
   ApiPublicOauthIntrospectRoute: ApiPublicOauthIntrospectRoute,
   ApiPublicOauthJwksRoute: ApiPublicOauthJwksRoute,

@@ -176,6 +176,45 @@ function SecurityPage() {
           </ul>
         )}
       </section>
+
+      <section className="surface-panel p-6">
+        <h2 className="font-display text-lg font-semibold">Connected applications</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Third-party apps you granted access to with your EGREED ID.
+        </p>
+        {connected.isPending ? (
+          <Skeleton className="mt-4 h-24 w-full" />
+        ) : (
+          <ul className="mt-4 divide-y divide-border">
+            {(connected.data ?? []).map((grant) => (
+              <li key={grant.id} className="flex flex-wrap items-start gap-3 py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="font-mono text-sm break-all">{grant.client_id}</p>
+                  <p className="mt-1 font-mono text-xs text-muted-foreground">
+                    {grant.scopes.join(" ")}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Connected {new Date(grant.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  disabled={revokeMutation.isPending}
+                  onClick={() => revokeMutation.mutate(grant.client_id)}
+                >
+                  Revoke access
+                </Button>
+              </li>
+            ))}
+            {(connected.data ?? []).length === 0 && (
+              <li className="py-3 text-sm text-muted-foreground">
+                No applications are connected to your account.
+              </li>
+            )}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }

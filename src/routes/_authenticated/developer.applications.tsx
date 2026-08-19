@@ -53,6 +53,7 @@ function ApplicationsPage() {
   const [clientType, setClientType] = useState<"confidential" | "public">("confidential");
   const [scopes, setScopes] = useState<string[]>(["openid", "profile", "email"]);
   const [secret, setSecret] = useState<string | null>(null);
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
 
   const { data, isPending } = useQuery({
     queryKey: ["developer", "clients"],

@@ -40,6 +40,21 @@ function SecurityPage() {
     queryFn: () => fetchOverview(),
   });
   const alerts = useQuery({ queryKey: ["identity", "alerts"], queryFn: () => fetchAlerts() });
+  const fetchConnected = useServerFn(listConnectedApps);
+  const revokeConnected = useServerFn(revokeConnectedApp);
+  const connected = useQuery({
+    queryKey: ["identity", "connected-apps"],
+    queryFn: () => fetchConnected(),
+  });
+
+  const revokeMutation = useMutation({
+    mutationFn: (clientId: string) => revokeConnected({ data: { clientId } }),
+    onSuccess: () => {
+      toast.success("Access revoked");
+      queryClient.invalidateQueries({ queryKey: ["identity", "connected-apps"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
 
   const dismissMutation = useMutation({
     mutationFn: (alertId: string) => dismiss({ data: { alertId } }),

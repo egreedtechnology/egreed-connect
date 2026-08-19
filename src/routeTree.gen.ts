@@ -18,6 +18,7 @@ import { Route as StatusRouteImport } from './routes/status'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authenticated/developer'
 import { Route as AuthenticatedOrganizationsRouteImport } from './routes/_authenticated/organizations'
+import { Route as OauthAuthorizeRouteImport } from './routes/oauth.authorize'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account.index'
 import { Route as AuthenticatedAccountActivityRouteImport } from './routes/_authenticated/account.activity'
 import { Route as AuthenticatedAccountDevicesRouteImport } from './routes/_authenticated/account.devices'
@@ -81,6 +82,11 @@ const AuthenticatedOrganizationsRoute =
     path: '/organizations',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const OauthAuthorizeRoute = OauthAuthorizeRouteImport.update({
+  id: '/oauth/authorize',
+  path: '/oauth/authorize',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAccountIndexRoute =
   AuthenticatedAccountIndexRouteImport.update({
     id: '/',
@@ -189,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthenticatedAccountRouteWithChildren
   '/developer': typeof AuthenticatedDeveloperRouteWithChildren
   '/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
+  '/oauth/authorize': typeof OauthAuthorizeRoute
   '/account/activity': typeof AuthenticatedAccountActivityRoute
   '/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
@@ -213,6 +220,7 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/status': typeof StatusRoute
+  '/oauth/authorize': typeof OauthAuthorizeRoute
   '/account/activity': typeof AuthenticatedAccountActivityRoute
   '/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/_authenticated/account': typeof AuthenticatedAccountRouteWithChildren
   '/_authenticated/developer': typeof AuthenticatedDeveloperRouteWithChildren
   '/_authenticated/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
+  '/oauth/authorize': typeof OauthAuthorizeRoute
   '/_authenticated/account/activity': typeof AuthenticatedAccountActivityRoute
   '/_authenticated/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/_authenticated/account/privacy': typeof AuthenticatedAccountPrivacyRoute
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/developer'
     | '/organizations'
+    | '/oauth/authorize'
     | '/account/activity'
     | '/account/devices'
     | '/account/privacy'
@@ -295,6 +305,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/reset-password'
     | '/status'
+    | '/oauth/authorize'
     | '/account/activity'
     | '/account/devices'
     | '/account/privacy'
@@ -323,6 +334,7 @@ export interface FileRouteTypes {
     | '/_authenticated/account'
     | '/_authenticated/developer'
     | '/_authenticated/organizations'
+    | '/oauth/authorize'
     | '/_authenticated/account/activity'
     | '/_authenticated/account/devices'
     | '/_authenticated/account/privacy'
@@ -349,6 +361,7 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   StatusRoute: typeof StatusRoute
+  OauthAuthorizeRoute: typeof OauthAuthorizeRoute
   ApiPublicOauthIntrospectRoute: typeof ApiPublicOauthIntrospectRoute
   ApiPublicOauthJwksRoute: typeof ApiPublicOauthJwksRoute
   ApiPublicOauthOpenidConfigurationRoute: typeof ApiPublicOauthOpenidConfigurationRoute
@@ -421,6 +434,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/organizations'
       preLoaderRoute: typeof AuthenticatedOrganizationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/oauth/authorize': {
+      id: '/oauth/authorize'
+      path: '/oauth/authorize'
+      fullPath: '/oauth/authorize'
+      preLoaderRoute: typeof OauthAuthorizeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/account/': {
       id: '/_authenticated/account/'
@@ -622,6 +642,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   StatusRoute: StatusRoute,
+  OauthAuthorizeRoute: OauthAuthorizeRoute,
   ApiPublicOauthIntrospectRoute: ApiPublicOauthIntrospectRoute,
   ApiPublicOauthJwksRoute: ApiPublicOauthJwksRoute,
   ApiPublicOauthOpenidConfigurationRoute:

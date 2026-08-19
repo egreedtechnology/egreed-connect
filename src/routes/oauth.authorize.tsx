@@ -30,14 +30,14 @@ const SCOPE_LABELS: Record<string, string> = {
 };
 
 type Search = {
-  client_id?: string;
-  redirect_uri?: string;
-  response_type?: string;
-  scope?: string;
-  state?: string;
-  nonce?: string;
-  code_challenge?: string;
-  code_challenge_method?: "S256" | "plain";
+  client_id?: string | undefined;
+  redirect_uri?: string | undefined;
+  response_type?: string | undefined;
+  scope?: string | undefined;
+  state?: string | undefined;
+  nonce?: string | undefined;
+  code_challenge?: string | undefined;
+  code_challenge_method?: "S256" | "plain" | undefined;
 };
 
 function str(value: unknown): string | undefined {

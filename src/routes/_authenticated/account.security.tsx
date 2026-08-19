@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { dismissAlert, getIdentityOverview, listAlerts } from "@/lib/identity.functions";
+import { listConnectedApps, revokeConnectedApp } from "@/lib/oauth.functions";
 
 export const Route = createFileRoute("/_authenticated/account/security")({
   head: () => ({

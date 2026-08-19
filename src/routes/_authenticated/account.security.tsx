@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { dismissAlert, getIdentityOverview, listAlerts } from "@/lib/identity.functions";
+import { listConnectedApps, revokeConnectedApp } from "@/lib/oauth.functions";
 
 export const Route = createFileRoute("/_authenticated/account/security")({
   head: () => ({
@@ -40,6 +41,21 @@ function SecurityPage() {
     queryFn: () => fetchOverview(),
   });
   const alerts = useQuery({ queryKey: ["identity", "alerts"], queryFn: () => fetchAlerts() });
+  const fetchConnected = useServerFn(listConnectedApps);
+  const revokeConnected = useServerFn(revokeConnectedApp);
+  const connected = useQuery({
+    queryKey: ["identity", "connected-apps"],
+    queryFn: () => fetchConnected(),
+  });
+
+  const revokeMutation = useMutation({
+    mutationFn: (clientId: string) => revokeConnected({ data: { clientId } }),
+    onSuccess: () => {
+      toast.success("Access revoked");
+      queryClient.invalidateQueries({ queryKey: ["identity", "connected-apps"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
 
   const dismissMutation = useMutation({
     mutationFn: (alertId: string) => dismiss({ data: { alertId } }),
@@ -171,6 +187,45 @@ function SecurityPage() {
             {(alerts.data ?? []).length === 0 && (
               <li className="py-3 text-sm text-muted-foreground">
                 No security alerts. Everything looks healthy.
+              </li>
+            )}
+          </ul>
+        )}
+      </section>
+
+      <section className="surface-panel p-6">
+        <h2 className="font-display text-lg font-semibold">Connected applications</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Third-party apps you granted access to with your EGREED ID.
+        </p>
+        {connected.isPending ? (
+          <Skeleton className="mt-4 h-24 w-full" />
+        ) : (
+          <ul className="mt-4 divide-y divide-border">
+            {(connected.data ?? []).map((grant) => (
+              <li key={grant.id} className="flex flex-wrap items-start gap-3 py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="font-mono text-sm break-all">{grant.client_id}</p>
+                  <p className="mt-1 font-mono text-xs text-muted-foreground">
+                    {grant.scopes.join(" ")}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Connected {new Date(grant.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  disabled={revokeMutation.isPending}
+                  onClick={() => revokeMutation.mutate(grant.client_id)}
+                >
+                  Revoke access
+                </Button>
+              </li>
+            ))}
+            {(connected.data ?? []).length === 0 && (
+              <li className="py-3 text-sm text-muted-foreground">
+                No applications are connected to your account.
               </li>
             )}
           </ul>

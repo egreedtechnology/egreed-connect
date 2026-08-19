@@ -53,6 +53,7 @@ function ApplicationsPage() {
   const [clientType, setClientType] = useState<"confidential" | "public">("confidential");
   const [scopes, setScopes] = useState<string[]>(["openid", "profile", "email"]);
   const [secret, setSecret] = useState<string | null>(null);
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
 
   const { data, isPending } = useQuery({
     queryKey: ["developer", "clients"],
@@ -113,6 +114,40 @@ function ApplicationsPage() {
           Register clients that delegate authentication to EGREED Identity.
         </p>
       </header>
+
+      <section className="surface-panel p-6">
+        <h2 className="font-display text-lg font-semibold">Integration endpoints</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Point any OAuth 2.1 / OIDC client library at the discovery document — everything else is
+          resolved automatically.
+        </p>
+        <dl className="mt-4 space-y-2 font-mono text-xs">
+          {[
+            ["Discovery", "/.well-known/openid-configuration"],
+            ["Authorization", "/oauth/authorize"],
+            ["Token", "/api/public/oauth/token"],
+            ["UserInfo", "/api/public/oauth/userinfo"],
+            ["JWKS", "/api/public/oauth/jwks"],
+            ["Introspection", "/api/public/oauth/introspect"],
+            ["Revocation", "/api/public/oauth/revoke"],
+            ["Identity REST", "/api/public/v1/me"],
+            ["Organizations REST", "/api/public/v1/organizations"],
+          ].map(([label, path]) => (
+            <div key={path} className="flex flex-wrap gap-2">
+              <dt className="w-32 shrink-0 text-muted-foreground">{label}</dt>
+              <dd className="break-all text-primary">
+                {origin}
+                {path}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mt-4 text-xs text-muted-foreground">
+          Supported grants: authorization_code (PKCE), refresh_token, client_credentials. ID tokens
+          are RS256 and verifiable offline via JWKS.
+        </p>
+      </section>
+
 
       {secret && (
         <div className="surface-panel border-primary/50 p-5">

@@ -89,6 +89,23 @@ function KeysPage() {
         </p>
       </header>
 
+      <section className="surface-panel p-6">
+        <h2 className="font-display text-lg font-semibold">Using a key</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Send the key as a bearer token (or in the <code className="font-mono">X-API-Key</code>{" "}
+          header) from your backend — never from a browser.
+        </p>
+        <pre className="mt-4 overflow-x-auto rounded-md bg-secondary p-4 font-mono text-xs">
+          {`curl ${typeof window === "undefined" ? "" : window.location.origin}/api/public/v1/me \\
+  -H "Authorization: Bearer egr_live_..."`}
+        </pre>
+        <p className="mt-3 text-xs text-muted-foreground">
+          Keys are stored as SHA-256 hashes, honour their scopes and expiry, and record last use on
+          every call.
+        </p>
+      </section>
+
+
       {plaintext && (
         <div className="surface-panel border-primary/50 p-5">
           <p className="text-sm font-medium">Copy your API key now</p>

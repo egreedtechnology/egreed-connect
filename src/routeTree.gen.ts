@@ -37,6 +37,7 @@ import { Route as ApiPublicOauthRevokeRouteImport } from './routes/api/public/oa
 import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oauth/token'
 import { Route as ApiPublicOauthUserinfoRouteImport } from './routes/api/public/oauth/userinfo'
 import { Route as ApiPublicV1MeRouteImport } from './routes/api/public/v1/me'
+import { Route as ApiPublicV1OrganizationsRouteImport } from './routes/api/public/v1/organizations'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -191,6 +192,12 @@ const ApiPublicV1MeRoute = ApiPublicV1MeRouteImport.update({
   path: '/api/public/v1/me',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1OrganizationsRoute =
+  ApiPublicV1OrganizationsRouteImport.update({
+    id: '/api/public/v1/organizations',
+    path: '/api/public/v1/organizations',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -220,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
+  '/api/public/v1/organizations': typeof ApiPublicV1OrganizationsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -246,6 +254,7 @@ export interface FileRoutesByTo {
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
+  '/api/public/v1/organizations': typeof ApiPublicV1OrganizationsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -277,6 +286,7 @@ export interface FileRoutesById {
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/oauth/userinfo': typeof ApiPublicOauthUserinfoRoute
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
+  '/api/public/v1/organizations': typeof ApiPublicV1OrganizationsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/token'
     | '/api/public/oauth/userinfo'
     | '/api/public/v1/me'
+    | '/api/public/v1/organizations'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -334,6 +345,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/token'
     | '/api/public/oauth/userinfo'
     | '/api/public/v1/me'
+    | '/api/public/v1/organizations'
   id:
     | '__root__'
     | '/'
@@ -364,6 +376,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/token'
     | '/api/public/oauth/userinfo'
     | '/api/public/v1/me'
+    | '/api/public/v1/organizations'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -381,6 +394,7 @@ export interface RootRouteChildren {
   ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute
   ApiPublicOauthUserinfoRoute: typeof ApiPublicOauthUserinfoRoute
   ApiPublicV1MeRoute: typeof ApiPublicV1MeRoute
+  ApiPublicV1OrganizationsRoute: typeof ApiPublicV1OrganizationsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -581,6 +595,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1MeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/organizations': {
+      id: '/api/public/v1/organizations'
+      path: '/api/public/v1/organizations'
+      fullPath: '/api/public/v1/organizations'
+      preLoaderRoute: typeof ApiPublicV1OrganizationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -671,6 +692,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicOauthTokenRoute: ApiPublicOauthTokenRoute,
   ApiPublicOauthUserinfoRoute: ApiPublicOauthUserinfoRoute,
   ApiPublicV1MeRoute: ApiPublicV1MeRoute,
+  ApiPublicV1OrganizationsRoute: ApiPublicV1OrganizationsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

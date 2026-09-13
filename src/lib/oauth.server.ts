@@ -507,3 +507,83 @@ export async function authenticateApiKey(request: Request): Promise<ApiKeyIdenti
 export function requireScope(scopes: string[], scope: string): boolean {
   return scopes.includes(scope);
 }
+
+/* ------------------------------------------------ unified REST principal */
+
+/**
+ * The caller of a `/api/public/v1/*` endpoint: either an OAuth access token
+ * (user context, or none for client_credentials) or an owner-bound API key.
+ */
+export type Principal =
+  | { kind: "oauth_token"; subjectId: string | null; clientId: string; scopes: string[] }
+  | {
+      kind: "api_key";
+      subjectId: string;
+      keyId: string;
+      environment: string;
+      scopes: string[];
+    };
+
+export async function authenticateRequest(request: Request): Promise<Principal | null> {
+  const token = await authenticateBearer(request);
+  if (token) {
+    return { kind: "oauth_token", subjectId: token.userId, clientId: token.clientId, scopes: token.scopes };
+  }
+  const apiKey = await authenticateApiKey(request);
+  if (apiKey) {
+    return {
+      kind: "api_key",
+      subjectId: apiKey.ownerId,
+      keyId: apiKey.keyId,
+      environment: apiKey.environment,
+      scopes: apiKey.scopes,
+    };
+  }
+  return null;
+}
+
+/**
+ * Authenticates the request and enforces that at least one of `anyOf` scopes
+ * is present. Returns either the principal or a ready-to-send error Response
+ * with RFC 6750 `WWW-Authenticate` challenges, so every REST handler rejects
+ * missing/insufficient scopes identically.
+ */
+export async function requireApiAccess(
+  request: Request,
+  anyOf: string[],
+  options: { requireUser?: boolean } = {},
+): Promise<{ principal: Principal; error?: undefined } | { principal?: undefined; error: Response }> {
+  const principal = await authenticateRequest(request);
+  if (!principal) {
+    return {
+      error: oauthError(
+        "invalid_token",
+        "Provide an OAuth access token or an EGREED API key.",
+        401,
+        { "www-authenticate": 'Bearer realm="EGREED Identity", error="invalid_token"' },
+      ),
+    };
+  }
+  if ((options.requireUser ?? true) && !principal.subjectId) {
+    return {
+      error: oauthError(
+        "invalid_token",
+        "This token has no user context. Use an authorization_code token or an API key.",
+        403,
+      ),
+    };
+  }
+  if (!anyOf.some((scope) => principal.scopes.includes(scope))) {
+    return {
+      error: oauthError(
+        "insufficient_scope",
+        `This endpoint requires one of: ${anyOf.join(", ")}.`,
+        403,
+        {
+          "www-authenticate": `Bearer realm="EGREED Identity", error="insufficient_scope", scope="${anyOf.join(" ")}"`,
+        },
+      ),
+    };
+  }
+  return { principal };
+}

@@ -53,6 +53,60 @@ export const API_SCOPES = [
   "audit:read",
 ] as const;
 
+export type ApiScope = (typeof API_SCOPES)[number];
+
+/**
+ * Human-readable scope catalogue: what each scope unlocks and which REST
+ * endpoints enforce it. Shown in the developer console and the docs.
+ */
+export const API_SCOPE_DETAILS: Record<
+  ApiScope,
+  { label: string; description: string; endpoints: string[]; risk: "low" | "medium" | "high" }
+> = {
+  "identity:read": {
+    label: "Read identity",
+    description: "Profile, email and verification status of the key owner.",
+    endpoints: ["GET /api/public/v1/me"],
+    risk: "low",
+  },
+  "identity:write": {
+    label: "Update identity",
+    description: "Update display name, job title, locale and timezone.",
+    endpoints: ["PATCH /api/public/v1/me"],
+    risk: "medium",
+  },
+  "sessions:read": {
+    label: "Read devices",
+    description: "List known devices and trust state.",
+    endpoints: ["GET /api/public/v1/sessions"],
+    risk: "medium",
+  },
+  "sessions:revoke": {
+    label: "Revoke devices",
+    description: "Remove trust from devices remotely.",
+    endpoints: ["DELETE /api/public/v1/sessions"],
+    risk: "high",
+  },
+  "organizations:read": {
+    label: "Read organizations",
+    description: "Organization memberships and roles for RBAC mirroring.",
+    endpoints: ["GET /api/public/v1/organizations"],
+    risk: "low",
+  },
+  "organizations:write": {
+    label: "Manage organizations",
+    description: "Reserved for provisioning integrations (SCIM-style).",
+    endpoints: [],
+    risk: "high",
+  },
+  "audit:read": {
+    label: "Read audit log",
+    description: "Security and account events for SIEM forwarding.",
+    endpoints: ["GET /api/public/v1/audit"],
+    risk: "medium",
+  },
+};
+
 /** Scopes an OAuth client may request from a user. */
 export const OAUTH_SCOPES = [
   "openid",
@@ -62,6 +116,25 @@ export const OAUTH_SCOPES = [
   "offline_access",
   "organizations:read",
 ] as const;
+
+export type OAuthScope = (typeof OAUTH_SCOPES)[number];
+
+export const OAUTH_SCOPE_DESCRIPTIONS: Record<OAuthScope, string> = {
+  openid: "Issue an ID token proving who signed in",
+  profile: "Name, username, picture, locale and timezone",
+  email: "Email address and verification status",
+  phone: "Phone number and verification status",
+  offline_access: "Refresh tokens so the app stays signed in",
+  "organizations:read": "Organization memberships and roles",
+};
+
+export function isApiScope(value: string): value is ApiScope {
+  return (API_SCOPES as readonly string[]).includes(value);
+}
+
+export function isOAuthScope(value: string): value is OAuthScope {
+  return (OAUTH_SCOPES as readonly string[]).includes(value);
+}
 
 export const ORG_ROLES = [
   "owner",

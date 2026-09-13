@@ -1,5 +1,265 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- EGREED Identity -->
+  <url>
+    <loc>https://id.egreedtech.org/</loc>
+  </url>
+
+  <!-- Platform -->
+  <url>
+    <loc>https://id.egreedtech.org/docs</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/status</loc>
+  </url>
+
+  <!-- Authentication -->
+  <url>
+    <loc>https://id.egreedtech.org/auth</loc>
+  </url>
+
+  <!-- Account -->
+  <url>
+    <loc>https://id.egreedtech.org/account</loc>
+  </url>
+
+  <!-- Developer -->
+  <url>
+    <loc>https://id.egreedtech.org/developer</loc>
+  </url>
+
+  <!-- Identity Infrastructure -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/identity-infrastructure</loc>
+  </url>
+
+  <!-- Single Sign-On -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/single-sign-on</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/sso</loc>
+  </url>
+
+  <!-- OAuth 2.1 -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/oauth-2-1</loc>
+  </url>
+
+  <!-- OpenID Connect -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/openid-connect</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/oidc</loc>
+  </url>
+
+  <!-- PKCE -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/pkce</loc>
+  </url>
+
+  <!-- RBAC -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/rbac</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/role-based-access-control</loc>
+  </url>
+
+  <!-- Organizations -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/organizations</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/organization-management</loc>
+  </url>
+
+  <!-- MFA -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/mfa</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/multi-factor-authentication</loc>
+  </url>
+
+  <!-- Passkeys -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/passkeys</loc>
+  </url>
+
+  <!-- Device Trust -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/device-trust</loc>
+  </url>
+
+  <!-- Security -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/security</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/adaptive-security</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/sign-in-alerts</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/security-scoring</loc>
+  </url>
+
+  <!-- Audit -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/audit</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/audit-logging</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/audit-logs</loc>
+  </url>
+
+  <!-- Developer Console -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/developer-console</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/api-keys</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/oauth-applications</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/applications</loc>
+  </url>
+
+  <!-- API -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/api</loc>
+  </url>
+
+  <!-- Compliance -->
+  <url>
+    <loc>https://id.egreedtech.org/docs/compliance</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/privacy</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/docs/data-residency</loc>
+  </url>
+
+  <!-- EGREED Ecosystem -->
+  <url>
+    <loc>https://id.egreedtech.org/products</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/products/cloud</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/products/ai</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/products/mail</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/products/drive</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/products/browser</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/products/learn</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/products/deploy</loc>
+  </url>
+
+  <url>
+    <loc>https://id.egreedtech.org/products/sos</loc>
+  </url>
+
+  <!-- EGREED Cloud -->
+  <url>
+    <loc>https://cloud.egreedtech.org/</loc>
+  </url>
+
+  <!-- EGREED AI -->
+  <url>
+    <loc>https://ai.egreedtech.org/</loc>
+  </url>
+
+  <!-- EGREED Mail -->
+  <url>
+    <loc>https://mail.egreedtech.org/</loc>
+  </url>
+
+  <!-- EGREED Drive -->
+  <url>
+    <loc>https://drive.egreedtech.org/</loc>
+  </url>
+
+  <!-- EGREED Browser -->
+  <url>
+    <loc>https://browser.egreedtech.org/</loc>
+  </url>
+
+  <!-- EGREED Learn -->
+  <url>
+    <loc>https://learn.egreedtech.org/</loc>
+  </url>
+
+  <!-- EGREED Deploy -->
+  <url>
+    <loc>https://deploy.egreedtech.org/</loc>
+  </url>
+
+  <!-- EGREED SOS -->
+  <url>
+    <loc>https://sos.egreedtech.org/</loc>
+  </url>
+
+  <!-- Identity infrastructure subdomains -->
+  <url>
+    <loc>https://admin.id.egreedtech.org/</loc>
+  </url>
+
+  <url>
+    <loc>https://developer.id.egreedtech.org/</loc>
+  </url>
+
+  <url>
+    <loc>https://docs.id.egreedtech.org/</loc>
+  </url>
+
+</urlset>
+
+
+
+
   <url>
     <loc>https://id.egreedtech.org/</loc>
   </url>

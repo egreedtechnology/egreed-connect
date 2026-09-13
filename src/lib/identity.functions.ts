@@ -6,6 +6,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { API_SCOPES, OAUTH_SCOPES } from "./egreed";
 import {
   generateApiKey,
   generateClientCredentials,
@@ -351,7 +352,7 @@ export const createApiKey = createServerFn({ method: "POST" })
       .object({
         name: z.string().trim().min(2).max(60),
         environment: z.enum(["live", "test"]),
-        scopes: z.array(z.string().max(48)).min(1).max(12),
+        scopes: z.array(z.enum(API_SCOPES)).min(1).max(12),
         expiresInDays: z.number().int().min(0).max(730),
       })
       .parse(input),
@@ -430,7 +431,7 @@ export const createOAuthClient = createServerFn({ method: "POST" })
         client_type: z.enum(["confidential", "public"]),
         homepage_url: z.string().trim().url().max(200).optional().or(z.literal("")),
         redirect_uris: z.array(z.string().trim().url().max(300)).min(1).max(10),
-        scopes: z.array(z.string().max(48)).min(1).max(12),
+        scopes: z.array(z.enum(OAUTH_SCOPES)).min(1).max(12),
       })
       .parse(input),
   )

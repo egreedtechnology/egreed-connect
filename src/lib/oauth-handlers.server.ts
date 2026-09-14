@@ -285,7 +285,7 @@ export async function handleMePatch(request: Request): Promise<Response> {
   if (!body) return oauth.oauthError("invalid_request", "A JSON body is required.");
 
   const allowed = ["display_name", "full_name", "job_title", "locale", "timezone"] as const;
-  const patch: Record<string, string> = {};
+  const patch: Partial<Record<(typeof allowed)[number], string>> = {};
   for (const key of allowed) {
     const value = body[key];
     if (value === undefined) continue;

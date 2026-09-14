@@ -1,5 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<?xml version="1.0" encoding="UTF-8"?> 
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> 
+<url>
+  <loc>http://id.egreedtech.org/</loc>
+  <priority>0.8</priority>
+  <changefreq>hourly</changefreq>
+  <lastmod>2026-09-15</lastmod>
+</url>
+<url>
+  <loc>http://id.egreedtech.org/docs</loc>
+  <priority>0.8</priority>
+  <changefreq>hourly</changefreq>
+  <lastmod>2026-09-15</lastmod>
+</url>
+<url>
+  <loc>http://id.egreedtech.org/status</loc>
+  <priority>0.8</priority>
+  <changefreq>hourly</changefreq>
+  <lastmod>2026-09-15</lastmod>
+</url>
+<url>
+  <loc>http://id.egreedtech.org/auth</loc>
+  <priority>0.8</priority>
+  <changefreq>hourly</changefreq>
+  <lastmod>2026-09-15</lastmod>
+</url>
+<url>
+  <loc>http://id.egreedtech.org/account</loc>
+  <priority>0.8</priority>
+  <changefreq>hourly</changefreq>
+  <lastmod>2026-09-15</lastmod>
+</url>
+<url>
+  <loc>http://id.egreedtech.org/developer</loc>
+  <priority>0.8</priority>
+  <changefreq>hourly</changefreq>
+  <lastmod>2026-09-15</lastmod>
+</url>
+<url>
+  <loc></loc>
+  <priority>0.8</priority>
+  <changefreq>hourly</changefreq>
+  <lastmod>2026-09-15</lastmod>
+</url>
+</urlset>
+
 
   <!-- EGREED Identity -->
   <url>

@@ -4,6 +4,8 @@ import {
   Activity,
   Building2,
   Boxes,
+  FlaskConical,
+
   KeyRound,
   LayoutDashboard,
   LogOut,

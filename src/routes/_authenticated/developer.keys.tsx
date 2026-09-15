@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { API_SCOPES } from "@/lib/egreed";
+import { API_SCOPES, API_SCOPE_DETAILS } from "@/lib/egreed";
 import { createApiKey, listApiKeys, revokeApiKey } from "@/lib/identity.functions";
 
 export const Route = createFileRoute("/_authenticated/developer/keys")({

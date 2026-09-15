@@ -86,6 +86,17 @@ export async function handleToken(request: Request): Promise<Response> {
       issuer,
       nonce: row.nonce,
     });
+    await oauth.logIntegrationEvent({
+      request,
+      userId: row.user_id,
+      eventType: "oauth.token_issued",
+      description: `${client.name} exchanged an authorization code for tokens`,
+      metadata: {
+        client_id: client.client_id,
+        grant_type: "authorization_code",
+        scopes: row.scopes ?? [],
+      },
+    });
     return oauth.jsonResponse(tokens);
   }
 
@@ -101,9 +112,25 @@ export async function handleToken(request: Request): Promise<Response> {
       .maybeSingle();
 
     if (!row || row.client_id !== client.client_id || row.revoked_at) {
+      await oauth.logIntegrationEvent({
+        request,
+        userId: row?.user_id ?? null,
+        eventType: "oauth.refresh_rejected",
+        status: "warning",
+        description: `Rejected an invalid or already-rotated refresh token for ${client.name}`,
+        metadata: { client_id: client.client_id, reason: row?.revoked_at ? "revoked" : "unknown_token" },
+      });
       return oauth.oauthError("invalid_grant", "Refresh token is not valid.");
     }
     if (row.refresh_expires_at && new Date(row.refresh_expires_at).getTime() < Date.now()) {
+      await oauth.logIntegrationEvent({
+        request,
+        userId: row.user_id,
+        eventType: "oauth.refresh_rejected",
+        status: "warning",
+        description: `Refresh token for ${client.name} has expired`,
+        metadata: { client_id: client.client_id, reason: "expired" },
+      });
       return oauth.oauthError("invalid_grant", "Refresh token has expired.");
     }
 
@@ -125,6 +152,13 @@ export async function handleToken(request: Request): Promise<Response> {
       scopes,
       grantType: "refresh_token",
       issuer,
+    });
+    await oauth.logIntegrationEvent({
+      request,
+      userId: row.user_id,
+      eventType: "oauth.refresh_used",
+      description: `${client.name} refreshed its access without re-consent`,
+      metadata: { client_id: client.client_id, grant_type: "refresh_token", scopes, rotated: true },
     });
     return oauth.jsonResponse(tokens);
   }
@@ -148,8 +182,16 @@ export async function handleToken(request: Request): Promise<Response> {
       grantType: "client_credentials",
       issuer,
     });
+    await oauth.logIntegrationEvent({
+      request,
+      userId: client.owner_id,
+      eventType: "oauth.token_issued",
+      description: `${client.name} obtained a machine-to-machine token`,
+      metadata: { client_id: client.client_id, grant_type: "client_credentials", scopes },
+    });
     return oauth.jsonResponse(tokens);
   }
+
 
   return oauth.oauthError("unsupported_grant_type", `Unsupported grant_type: ${grantType}`);
 }

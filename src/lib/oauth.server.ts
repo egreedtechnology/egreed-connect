@@ -508,7 +508,50 @@ export function requireScope(scopes: string[], scope: string): boolean {
   return scopes.includes(scope);
 }
 
+/* ---------------------------------------------- integration audit trail */
+
+/**
+ * Records an external-integration event (REST call, token grant, refresh,
+ * rejection) in `audit_logs` so owners can verify access and failures.
+ * Never throws: logging must not break an API response.
+ */
+export async function logIntegrationEvent(input: {
+  request?: Request;
+  userId: string | null;
+  eventType: string;
+  status?: "success" | "warning" | "error";
+  description: string;
+  metadata?: Record<string, unknown>;
+}): Promise<void> {
+  try {
+    const headers = input.request?.headers;
+    const db = await admin();
+    await db
+      .from("audit_logs")
+
+      .insert({
+        user_id: input.userId,
+        event_type: input.eventType,
+        event_category: "integration",
+        status: input.status ?? "success",
+        description: input.description,
+        ip_address:
+          headers?.get("cf-connecting-ip") ??
+          headers?.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+          null,
+        user_agent: headers?.get("user-agent") ?? null,
+        metadata: {
+          ...(input.metadata ?? {}),
+          ...(input.request ? { path: new URL(input.request.url).pathname, method: input.request.method } : {}),
+        },
+      });
+  } catch {
+    /* audit logging is best-effort */
+  }
+}
+
 /* ------------------------------------------------ unified REST principal */
+
 
 /**
  * The caller of a `/api/public/v1/*` endpoint: either an OAuth access token
@@ -555,6 +598,14 @@ export async function requireApiAccess(
 ): Promise<{ principal: Principal; error?: undefined } | { principal?: undefined; error: Response }> {
   const principal = await authenticateRequest(request);
   if (!principal) {
+    await logIntegrationEvent({
+      request,
+      userId: null,
+      eventType: "api.request_unauthenticated",
+      status: "warning",
+      description: "Rejected an API call with missing or invalid credentials",
+      metadata: { required_scopes: anyOf },
+    });
     return {
       error: oauthError(
         "invalid_token",
@@ -565,6 +616,14 @@ export async function requireApiAccess(
     };
   }
   if ((options.requireUser ?? true) && !principal.subjectId) {
+    await logIntegrationEvent({
+      request,
+      userId: null,
+      eventType: "api.request_no_user_context",
+      status: "warning",
+      description: "Rejected an API call from a token with no user context",
+      metadata: { required_scopes: anyOf, principal: principal.kind },
+    });
     return {
       error: oauthError(
         "invalid_token",
@@ -574,6 +633,21 @@ export async function requireApiAccess(
     };
   }
   if (!anyOf.some((scope) => principal.scopes.includes(scope))) {
+    await logIntegrationEvent({
+      request,
+      userId: principal.subjectId,
+      eventType: "api.scope_denied",
+      status: "warning",
+      description: `Denied an API call missing scope: ${anyOf.join(" or ")}`,
+      metadata: {
+        required_scopes: anyOf,
+        granted_scopes: principal.scopes,
+        principal: principal.kind,
+        ...(principal.kind === "oauth_token"
+          ? { client_id: principal.clientId }
+          : { key_id: principal.keyId, environment: principal.environment }),
+      },
+    });
     return {
       error: oauthError(
         "insufficient_scope",
@@ -585,5 +659,22 @@ export async function requireApiAccess(
       ),
     };
   }
+  await logIntegrationEvent({
+    request,
+    userId: principal.subjectId,
+    eventType: principal.kind === "api_key" ? "api.key_request" : "api.token_request",
+    description:
+      principal.kind === "api_key"
+        ? `API key call accepted (${principal.environment})`
+        : `OAuth token call accepted for ${principal.clientId}`,
+    metadata: {
+      required_scopes: anyOf,
+      granted_scopes: principal.scopes,
+      ...(principal.kind === "oauth_token"
+        ? { client_id: principal.clientId }
+        : { key_id: principal.keyId, environment: principal.environment }),
+    },
+  });
+
   return { principal };
 }

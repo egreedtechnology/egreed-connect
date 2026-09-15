@@ -525,8 +525,10 @@ export async function logIntegrationEvent(input: {
 }): Promise<void> {
   try {
     const headers = input.request?.headers;
-    await admin()
+    const db = await admin();
+    await db
       .from("audit_logs")
+
       .insert({
         user_id: input.userId,
         event_type: input.eventType,

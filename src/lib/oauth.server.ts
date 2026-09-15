@@ -598,6 +598,14 @@ export async function requireApiAccess(
 ): Promise<{ principal: Principal; error?: undefined } | { principal?: undefined; error: Response }> {
   const principal = await authenticateRequest(request);
   if (!principal) {
+    await logIntegrationEvent({
+      request,
+      userId: null,
+      eventType: "api.request_unauthenticated",
+      status: "warning",
+      description: "Rejected an API call with missing or invalid credentials",
+      metadata: { required_scopes: anyOf },
+    });
     return {
       error: oauthError(
         "invalid_token",
@@ -608,6 +616,14 @@ export async function requireApiAccess(
     };
   }
   if ((options.requireUser ?? true) && !principal.subjectId) {
+    await logIntegrationEvent({
+      request,
+      userId: null,
+      eventType: "api.request_no_user_context",
+      status: "warning",
+      description: "Rejected an API call from a token with no user context",
+      metadata: { required_scopes: anyOf, principal: principal.kind },
+    });
     return {
       error: oauthError(
         "invalid_token",
@@ -617,6 +633,21 @@ export async function requireApiAccess(
     };
   }
   if (!anyOf.some((scope) => principal.scopes.includes(scope))) {
+    await logIntegrationEvent({
+      request,
+      userId: principal.subjectId,
+      eventType: "api.scope_denied",
+      status: "warning",
+      description: `Denied an API call missing scope: ${anyOf.join(" or ")}`,
+      metadata: {
+        required_scopes: anyOf,
+        granted_scopes: principal.scopes,
+        principal: principal.kind,
+        ...(principal.kind === "oauth_token"
+          ? { client_id: principal.clientId }
+          : { key_id: principal.keyId, environment: principal.environment }),
+      },
+    });
     return {
       error: oauthError(
         "insufficient_scope",
@@ -628,5 +659,22 @@ export async function requireApiAccess(
       ),
     };
   }
+  await logIntegrationEvent({
+    request,
+    userId: principal.subjectId,
+    eventType: principal.kind === "api_key" ? "api.key_request" : "api.token_request",
+    description:
+      principal.kind === "api_key"
+        ? `API key call accepted (${principal.environment})`
+        : `OAuth token call accepted for ${principal.clientId}`,
+    metadata: {
+      required_scopes: anyOf,
+      granted_scopes: principal.scopes,
+      ...(principal.kind === "oauth_token"
+        ? { client_id: principal.clientId }
+        : { key_id: principal.keyId, environment: principal.environment }),
+    },
+  });
+
   return { principal };
 }

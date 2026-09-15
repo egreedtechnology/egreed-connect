@@ -49,6 +49,8 @@ const GROUPS = [
       { to: "/developer" as const, label: "Console", icon: Terminal, exact: true },
       { to: "/developer/applications" as const, label: "Applications", icon: Boxes, exact: false },
       { to: "/developer/keys" as const, label: "API keys", icon: KeyRound, exact: false },
+      { to: "/developer/testing" as const, label: "Integration tester", icon: FlaskConical, exact: false },
+
     ],
   },
 ] as const;

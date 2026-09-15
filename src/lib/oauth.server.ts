@@ -508,7 +508,48 @@ export function requireScope(scopes: string[], scope: string): boolean {
   return scopes.includes(scope);
 }
 
+/* ---------------------------------------------- integration audit trail */
+
+/**
+ * Records an external-integration event (REST call, token grant, refresh,
+ * rejection) in `audit_logs` so owners can verify access and failures.
+ * Never throws: logging must not break an API response.
+ */
+export async function logIntegrationEvent(input: {
+  request?: Request;
+  userId: string | null;
+  eventType: string;
+  status?: "success" | "warning" | "error";
+  description: string;
+  metadata?: Record<string, unknown>;
+}): Promise<void> {
+  try {
+    const headers = input.request?.headers;
+    await admin()
+      .from("audit_logs")
+      .insert({
+        user_id: input.userId,
+        event_type: input.eventType,
+        event_category: "integration",
+        status: input.status ?? "success",
+        description: input.description,
+        ip_address:
+          headers?.get("cf-connecting-ip") ??
+          headers?.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+          null,
+        user_agent: headers?.get("user-agent") ?? null,
+        metadata: {
+          ...(input.metadata ?? {}),
+          ...(input.request ? { path: new URL(input.request.url).pathname, method: input.request.method } : {}),
+        },
+      });
+  } catch {
+    /* audit logging is best-effort */
+  }
+}
+
 /* ------------------------------------------------ unified REST principal */
+
 
 /**
  * The caller of a `/api/public/v1/*` endpoint: either an OAuth access token

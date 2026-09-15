@@ -176,22 +176,52 @@ function KeysPage() {
 
         <fieldset className="space-y-3">
           <legend className="text-sm font-medium">Scopes</legend>
-          <div className="flex flex-wrap gap-4">
-            {API_SCOPES.map((scope) => (
-              <label key={scope} className="flex items-center gap-2 font-mono text-xs">
-                <Checkbox
-                  checked={scopes.includes(scope)}
-                  onCheckedChange={(checked) =>
-                    setScopes((prev) =>
-                      checked ? [...new Set([...prev, scope])] : prev.filter((s) => s !== scope),
-                    )
-                  }
-                />
-                {scope}
-              </label>
-            ))}
+          <p className="text-xs text-muted-foreground">
+            A key can only reach the endpoints its scopes allow — every call is checked again on the
+            server, and anything outside these scopes is refused.
+          </p>
+          <div className="grid gap-3 md:grid-cols-2">
+            {API_SCOPES.map((scope) => {
+              const detail = API_SCOPE_DETAILS[scope];
+              const active = scopes.includes(scope);
+              return (
+                <label
+                  key={scope}
+                  className={`flex cursor-pointer gap-3 rounded-lg border p-3 transition-colors ${
+                    active ? "border-primary/60 bg-primary/5" : "border-border/60 hover:border-border"
+                  }`}
+                >
+                  <Checkbox
+                    className="mt-0.5"
+                    checked={active}
+                    onCheckedChange={(checked) =>
+                      setScopes((prev) =>
+                        checked ? [...new Set([...prev, scope])] : prev.filter((s) => s !== scope),
+                      )
+                    }
+                  />
+                  <span className="min-w-0 space-y-1">
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-medium">{detail.label}</span>
+                      <Badge
+                        variant={detail.risk === "high" ? "destructive" : "secondary"}
+                        className="text-[10px] uppercase"
+                      >
+                        {detail.risk} risk
+                      </Badge>
+                    </span>
+                    <span className="block font-mono text-[11px] text-muted-foreground">{scope}</span>
+                    <span className="block text-xs text-muted-foreground">{detail.description}</span>
+                    <span className="block font-mono text-[10px] text-muted-foreground/80">
+                      {detail.endpoints.join(" · ")}
+                    </span>
+                  </span>
+                </label>
+              );
+            })}
           </div>
         </fieldset>
+
 
         <Button type="submit" disabled={createMutation.isPending || scopes.length === 0}>
           {createMutation.isPending && <Loader2 className="size-4 animate-spin" />}

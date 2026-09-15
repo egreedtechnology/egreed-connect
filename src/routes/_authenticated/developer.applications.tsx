@@ -235,22 +235,41 @@ function ApplicationsPage() {
 
         <fieldset className="space-y-3">
           <legend className="text-sm font-medium">Requested scopes</legend>
-          <div className="flex flex-wrap gap-4">
-            {OAUTH_SCOPES.map((scope) => (
-              <label key={scope} className="flex items-center gap-2 font-mono text-xs">
-                <Checkbox
-                  checked={scopes.includes(scope)}
-                  onCheckedChange={(checked) =>
-                    setScopes((prev) =>
-                      checked ? [...new Set([...prev, scope])] : prev.filter((s) => s !== scope),
-                    )
-                  }
-                />
-                {scope}
-              </label>
-            ))}
+          <p className="text-xs text-muted-foreground">
+            Users see these on the consent screen. Tokens can never exceed them, and every API call is
+            re-checked against them.
+          </p>
+          <div className="grid gap-3 md:grid-cols-2">
+            {OAUTH_SCOPES.map((scope) => {
+              const active = scopes.includes(scope);
+              return (
+                <label
+                  key={scope}
+                  className={`flex cursor-pointer gap-3 rounded-lg border p-3 transition-colors ${
+                    active ? "border-primary/60 bg-primary/5" : "border-border/60 hover:border-border"
+                  }`}
+                >
+                  <Checkbox
+                    className="mt-0.5"
+                    checked={active}
+                    onCheckedChange={(checked) =>
+                      setScopes((prev) =>
+                        checked ? [...new Set([...prev, scope])] : prev.filter((s) => s !== scope),
+                      )
+                    }
+                  />
+                  <span className="min-w-0 space-y-1">
+                    <span className="block font-mono text-[11px]">{scope}</span>
+                    <span className="block text-xs text-muted-foreground">
+                      {OAUTH_SCOPE_DESCRIPTIONS[scope]}
+                    </span>
+                  </span>
+                </label>
+              );
+            })}
           </div>
         </fieldset>
+
 
         <Button type="submit" disabled={createMutation.isPending}>
           {createMutation.isPending && <Loader2 className="size-4 animate-spin" />}

@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { OAUTH_SCOPES } from "@/lib/egreed";
+import { OAUTH_SCOPES, OAUTH_SCOPE_DESCRIPTIONS } from "@/lib/egreed";
 import {
   createOAuthClient,
   deleteOAuthClient,

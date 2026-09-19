@@ -29,6 +29,7 @@ import { Route as AuthenticatedAccountSecurityRouteImport } from './routes/_auth
 import { Route as AuthenticatedDeveloperIndexRouteImport } from './routes/_authenticated/developer.index'
 import { Route as AuthenticatedDeveloperApplicationsRouteImport } from './routes/_authenticated/developer.applications'
 import { Route as AuthenticatedDeveloperKeysRouteImport } from './routes/_authenticated/developer.keys'
+import { Route as AuthenticatedDeveloperLogsRouteImport } from './routes/_authenticated/developer.logs'
 import { Route as AuthenticatedDeveloperTestingRouteImport } from './routes/_authenticated/developer.testing'
 import { Route as AuthenticatedOrganizationsIndexRouteImport } from './routes/_authenticated/organizations.index'
 import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_authenticated/organizations.$slug'
@@ -153,6 +154,12 @@ const AuthenticatedDeveloperKeysRoute =
     path: '/keys',
     getParentRoute: () => AuthenticatedDeveloperRoute,
   } as any)
+const AuthenticatedDeveloperLogsRoute =
+  AuthenticatedDeveloperLogsRouteImport.update({
+    id: '/logs',
+    path: '/logs',
+    getParentRoute: () => AuthenticatedDeveloperRoute,
+  } as any)
 const AuthenticatedDeveloperTestingRoute =
   AuthenticatedDeveloperTestingRouteImport.update({
     id: '/testing',
@@ -243,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/account/security': typeof AuthenticatedAccountSecurityRoute
   '/developer/applications': typeof AuthenticatedDeveloperApplicationsRoute
   '/developer/keys': typeof AuthenticatedDeveloperKeysRoute
+  '/developer/logs': typeof AuthenticatedDeveloperLogsRoute
   '/developer/testing': typeof AuthenticatedDeveloperTestingRoute
   '/organizations/$slug': typeof AuthenticatedOrganizationsSlugRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
@@ -274,6 +282,7 @@ export interface FileRoutesByTo {
   '/account/security': typeof AuthenticatedAccountSecurityRoute
   '/developer/applications': typeof AuthenticatedDeveloperApplicationsRoute
   '/developer/keys': typeof AuthenticatedDeveloperKeysRoute
+  '/developer/logs': typeof AuthenticatedDeveloperLogsRoute
   '/developer/testing': typeof AuthenticatedDeveloperTestingRoute
   '/organizations/$slug': typeof AuthenticatedOrganizationsSlugRoute
   '/account': typeof AuthenticatedAccountIndexRoute
@@ -310,6 +319,7 @@ export interface FileRoutesById {
   '/_authenticated/account/security': typeof AuthenticatedAccountSecurityRoute
   '/_authenticated/developer/applications': typeof AuthenticatedDeveloperApplicationsRoute
   '/_authenticated/developer/keys': typeof AuthenticatedDeveloperKeysRoute
+  '/_authenticated/developer/logs': typeof AuthenticatedDeveloperLogsRoute
   '/_authenticated/developer/testing': typeof AuthenticatedDeveloperTestingRoute
   '/_authenticated/organizations/$slug': typeof AuthenticatedOrganizationsSlugRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
@@ -346,6 +356,7 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/developer/applications'
     | '/developer/keys'
+    | '/developer/logs'
     | '/developer/testing'
     | '/organizations/$slug'
     | '/account/'
@@ -377,6 +388,7 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/developer/applications'
     | '/developer/keys'
+    | '/developer/logs'
     | '/developer/testing'
     | '/organizations/$slug'
     | '/account'
@@ -412,6 +424,7 @@ export interface FileRouteTypes {
     | '/_authenticated/account/security'
     | '/_authenticated/developer/applications'
     | '/_authenticated/developer/keys'
+    | '/_authenticated/developer/logs'
     | '/_authenticated/developer/testing'
     | '/_authenticated/organizations/$slug'
     | '/_authenticated/account/'
@@ -592,6 +605,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDeveloperKeysRouteImport
       parentRoute: typeof AuthenticatedDeveloperRoute
     }
+    '/_authenticated/developer/logs': {
+      id: '/_authenticated/developer/logs'
+      path: '/logs'
+      fullPath: '/developer/logs'
+      preLoaderRoute: typeof AuthenticatedDeveloperLogsRouteImport
+      parentRoute: typeof AuthenticatedDeveloperRoute
+    }
     '/_authenticated/developer/testing': {
       id: '/_authenticated/developer/testing'
       path: '/testing'
@@ -710,6 +730,7 @@ const AuthenticatedAccountRouteWithChildren =
 interface AuthenticatedDeveloperRouteChildren {
   AuthenticatedDeveloperApplicationsRoute: typeof AuthenticatedDeveloperApplicationsRoute
   AuthenticatedDeveloperKeysRoute: typeof AuthenticatedDeveloperKeysRoute
+  AuthenticatedDeveloperLogsRoute: typeof AuthenticatedDeveloperLogsRoute
   AuthenticatedDeveloperTestingRoute: typeof AuthenticatedDeveloperTestingRoute
   AuthenticatedDeveloperIndexRoute: typeof AuthenticatedDeveloperIndexRoute
 }
@@ -719,6 +740,7 @@ const AuthenticatedDeveloperRouteChildren: AuthenticatedDeveloperRouteChildren =
     AuthenticatedDeveloperApplicationsRoute:
       AuthenticatedDeveloperApplicationsRoute,
     AuthenticatedDeveloperKeysRoute: AuthenticatedDeveloperKeysRoute,
+    AuthenticatedDeveloperLogsRoute: AuthenticatedDeveloperLogsRoute,
     AuthenticatedDeveloperTestingRoute: AuthenticatedDeveloperTestingRoute,
     AuthenticatedDeveloperIndexRoute: AuthenticatedDeveloperIndexRoute,
   }

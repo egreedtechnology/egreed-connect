@@ -12,6 +12,7 @@ import {
   Menu,
   MonitorSmartphone,
   ShieldCheck,
+  ScrollText,
   Terminal,
   UserRound,
   Lock,

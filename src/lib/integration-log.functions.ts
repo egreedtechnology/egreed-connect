@@ -13,7 +13,8 @@ export type IntegrationLogEntry = {
   description: string | null;
   ip_address: string | null;
   user_agent: string | null;
-  metadata: Record<string, unknown> | null;
+  /** JSON-encoded request details (path, method, scopes, client). */
+  metadata: string | null;
   created_at: string;
 };
 

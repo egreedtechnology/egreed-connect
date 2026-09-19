@@ -21,11 +21,21 @@ export const Route = createFileRoute("/docs")({
 
 const ENDPOINTS = [
   ["GET", "/.well-known/openid-configuration", "Discovery document"],
-  ["GET", "/oauth/authorize", "Authorization request (PKCE required for public clients)"],
-  ["POST", "/oauth/token", "Token exchange and refresh rotation"],
-  ["GET", "/oauth/userinfo", "OIDC claims for the current access token"],
-  ["POST", "/oauth/revoke", "Revoke an access or refresh token"],
-  ["GET", "/api/v1/me", "Profile, roles and organization membership"],
+  ["GET", "/api/public/oauth/jwks", "Public signing keys (RS256) for ID token verification"],
+  ["GET", "/oauth/authorize", "Authorization request (PKCE S256 required for public clients)"],
+  ["POST", "/api/public/oauth/token", "Token exchange, refresh rotation and client credentials"],
+  ["GET", "/api/public/oauth/userinfo", "OIDC claims for the current access token"],
+  ["POST", "/api/public/oauth/introspect", "Validate a token (confidential clients)"],
+  ["POST", "/api/public/oauth/revoke", "Revoke an access or refresh token"],
+] as const;
+
+const REST_ENDPOINTS = [
+  ["GET", "/api/public/v1/me", "identity:read or profile", "Profile, email and verification status"],
+  ["PATCH", "/api/public/v1/me", "identity:write", "Update name, job title, locale and timezone"],
+  ["GET", "/api/public/v1/organizations", "organizations:read", "Memberships and roles for RBAC"],
+  ["GET", "/api/public/v1/sessions", "sessions:read", "Known devices and trust state"],
+  ["DELETE", "/api/public/v1/sessions?device_id=", "sessions:revoke", "Remove trust from a device"],
+  ["GET", "/api/public/v1/audit", "audit:read", "Security and account events for SIEM forwarding"],
 ] as const;
 
 function DocsPage() {

@@ -42,5 +42,14 @@ export const listIntegrationAccessLog = createServerFn({ method: "GET" })
 
     const { data: rows, error } = await query;
     if (error) throw new Error("Could not load the integration access log.");
-    return (rows ?? []) as IntegrationLogEntry[];
+    return (rows ?? []).map((row) => ({
+      id: row.id as string,
+      event_type: row.event_type as string,
+      status: row.status as string,
+      description: (row.description as string | null) ?? null,
+      ip_address: (row.ip_address as string | null) ?? null,
+      user_agent: (row.user_agent as string | null) ?? null,
+      metadata: row.metadata == null ? null : JSON.stringify(row.metadata, null, 2),
+      created_at: row.created_at as string,
+    }));
   });

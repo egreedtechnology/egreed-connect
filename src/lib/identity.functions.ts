@@ -501,3 +501,27 @@ export const deleteOAuthClient = createServerFn({ method: "POST" })
     });
     return { ok: true };
   });
+
+export const rotateOAuthClientSecret = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ clientId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }): Promise<{ secret: string }> => {
+    const creds = generateClientCredentials();
+    const { data: row, error } = await context.supabase
+      .from("oauth_clients")
+      .update({ client_secret_hash: creds.hash, secret_last_four: creds.lastFour })
+      .eq("id", data.clientId)
+      .eq("owner_id", context.userId)
+      .eq("client_type", "confidential")
+      .select("name")
+      .single();
+    if (error || !row) throw new Error("Could not rotate the client secret.");
+    await writeAuditLog({
+      userId: context.userId,
+      eventType: "oauth_client.secret_rotated",
+      category: "security",
+      status: "warning",
+      description: `Client secret rotated for "${row.name}"`,
+    });
+    return { secret: creds.secret };
+  });

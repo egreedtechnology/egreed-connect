@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { ConnectionDetails } from "@/components/developer/ConnectionDetails";
 import { OAUTH_SCOPES, OAUTH_SCOPE_DESCRIPTIONS } from "@/lib/egreed";
 import {
   createOAuthClient,
@@ -312,6 +313,7 @@ function ApplicationsPage() {
                       </li>
                     ))}
                   </ul>
+                  <ConnectionDetails client={client} issuer={origin} />
                 </div>
                 <div className="flex gap-2">
                   <Button

@@ -18,7 +18,12 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { API_SCOPES, API_SCOPE_DETAILS } from "@/lib/egreed";
-import { createApiKey, listApiKeys, revokeApiKey } from "@/lib/identity.functions";
+import {
+  createApiKey,
+  listApiKeys,
+  listOAuthClients,
+  revokeApiKey,
+} from "@/lib/identity.functions";
 
 export const Route = createFileRoute("/_authenticated/developer/keys")({
   head: () => ({
@@ -56,6 +61,16 @@ function KeysPage() {
     queryKey: ["developer", "keys"],
     queryFn: () => fetchKeys(),
   });
+
+  const fetchClients = useServerFn(listOAuthClients);
+  const { data: clients } = useQuery({
+    queryKey: ["developer", "clients"],
+    queryFn: () => fetchClients(),
+  });
+  const [pickedClientId, setEnvClientId] = useState("");
+  const envClientId = pickedClientId || clients?.[0]?.client_id || "";
+  const issuer = typeof window === "undefined" ? "" : window.location.origin;
+  const envBlock = `EGREED_ID_API_KEY=${plaintext ?? ""}\nEGREED_ID_CLIENT_ID=${envClientId || "<register an application>"}\nEGREED_ID_ISSUER=${issuer}`;
 
   const createMutation = useMutation({
     mutationFn: () =>
@@ -108,16 +123,50 @@ function KeysPage() {
 
       {plaintext && (
         <div className="surface-panel border-primary/50 p-5">
-          <p className="text-sm font-medium">Copy your API key now</p>
+          <p className="text-sm font-medium">Copy your credentials now</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Only a hash is stored — this is the only time the key is shown.
+            Only a hash is stored — this is the only time the key is shown. Paste these into the
+            environment settings of the EGREED system you are connecting.
           </p>
-          <code className="mt-3 block overflow-x-auto rounded-md bg-secondary p-3 font-mono text-xs">
-            {plaintext}
-          </code>
-          <Button size="sm" variant="outline" className="mt-3" onClick={() => setPlaintext(null)}>
-            I've stored it safely
-          </Button>
+          {(clients ?? []).length > 1 && (
+            <div className="mt-3 max-w-xs space-y-1">
+              <Label>Application (for client ID)</Label>
+              <Select value={envClientId} onValueChange={setEnvClientId}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {(clients ?? []).map((c) => (
+                    <SelectItem key={c.client_id} value={c.client_id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+          <pre className="mt-3 overflow-x-auto rounded-md bg-secondary p-3 font-mono text-xs">
+            {envBlock}
+          </pre>
+          {!envClientId && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              Register an OAuth application to get a client ID.
+            </p>
+          )}
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              onClick={() => {
+                void navigator.clipboard.writeText(envBlock);
+                toast.success("Credentials copied");
+              }}
+            >
+              Copy all
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setPlaintext(null)}>
+              I've stored it safely
+            </Button>
+          </div>
         </div>
       )}
 

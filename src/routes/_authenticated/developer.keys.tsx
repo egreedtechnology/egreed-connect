@@ -72,6 +72,14 @@ function KeysPage() {
   const envClientId = pickedClientId || clients?.[0]?.client_id || "";
   const issuer = typeof window === "undefined" ? "" : window.location.origin;
   const envBlock = `EGREED_ID_API_KEY=${plaintext ?? ""}\nEGREED_ID_CLIENT_ID=${envClientId || "<register an application>"}\nEGREED_ID_ISSUER=${issuer}`;
+  const runCheck = useServerFn(checkConnection);
+  const checkMutation = useMutation({
+    mutationFn: () =>
+      runCheck({ data: { clientId: envClientId, issuer, apiKey: plaintext ?? "" } }),
+    onSuccess: (r) =>
+      r.ok ? toast.success("Configuration looks good") : toast.error("Configuration issues found"),
+    onError: (error: Error) => toast.error(error.message),
+  });
 
   const createMutation = useMutation({
     mutationFn: () =>

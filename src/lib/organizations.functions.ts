@@ -4,7 +4,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireSupabaseAuth } from "@/lib/auth-middleware";
 import { randomToken, sha256, writeAuditLog } from "./identity.server";
 import { slugify } from "./organizations.shared";
 import { ORG_ROLES } from "./organizations.types";

@@ -13,6 +13,7 @@ import {
   MonitorSmartphone,
   ShieldCheck,
   ScrollText,
+  Sparkles,
   Terminal,
   UserRound,
   Lock,
@@ -54,6 +55,7 @@ const GROUPS = [
       { to: "/developer/keys" as const, label: "API keys", icon: KeyRound, exact: false },
       { to: "/developer/testing" as const, label: "Integration tester", icon: FlaskConical, exact: false },
       { to: "/developer/logs" as const, label: "Access log", icon: ScrollText, exact: false },
+      { to: "/developer/setup" as const, label: "Setup assistant", icon: Sparkles, exact: false },
 
     ],
   },

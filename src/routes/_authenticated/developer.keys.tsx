@@ -3,7 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, XCircle } from "lucide-react";
+import { checkConnection } from "@/lib/setup.functions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -71,6 +72,14 @@ function KeysPage() {
   const envClientId = pickedClientId || clients?.[0]?.client_id || "";
   const issuer = typeof window === "undefined" ? "" : window.location.origin;
   const envBlock = `EGREED_ID_API_KEY=${plaintext ?? ""}\nEGREED_ID_CLIENT_ID=${envClientId || "<register an application>"}\nEGREED_ID_ISSUER=${issuer}`;
+  const runCheck = useServerFn(checkConnection);
+  const checkMutation = useMutation({
+    mutationFn: () =>
+      runCheck({ data: { clientId: envClientId, issuer, apiKey: plaintext ?? "" } }),
+    onSuccess: (r) =>
+      r.ok ? toast.success("Configuration looks good") : toast.error("Configuration issues found"),
+    onError: (error: Error) => toast.error(error.message),
+  });
 
   const createMutation = useMutation({
     mutationFn: () =>
@@ -163,10 +172,57 @@ function KeysPage() {
             >
               Copy all
             </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                const blob = new Blob([`# EGREED Identity — keep this file private, never commit it\n${envBlock}\n`], {
+                  type: "text/plain",
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = ".env";
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+            >
+              Download .env
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={checkMutation.isPending}
+              onClick={() => checkMutation.mutate()}
+            >
+              {checkMutation.isPending && <Loader2 className="size-4 animate-spin" />}
+              Check connection
+            </Button>
             <Button size="sm" variant="outline" onClick={() => setPlaintext(null)}>
               I've stored it safely
             </Button>
           </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            The file is created in your browser only. Add <code className="font-mono">.env</code> to
+            your <code className="font-mono">.gitignore</code>.
+          </p>
+          {checkMutation.data && (
+            <ul className="mt-4 space-y-2">
+              {checkMutation.data.items.map((item) => (
+                <li key={item.id} className="flex gap-2 text-xs">
+                  {item.ok ? (
+                    <CheckCircle2 className="size-4 shrink-0 text-primary" />
+                  ) : (
+                    <XCircle className="size-4 shrink-0 text-destructive" />
+                  )}
+                  <span>
+                    <span className="font-medium">{item.label}:</span>{" "}
+                    <span className="text-muted-foreground">{item.detail}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 

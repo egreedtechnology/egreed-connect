@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Architecture rules
+- Vercel deployments (custom domain) only proxy every request to the Lovable-hosted app via `vercel.json` routes; never run the server code on Vercel. Why: Lovable Cloud's service key and signing secrets exist only on Lovable hosting.

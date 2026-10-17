@@ -44,8 +44,8 @@ function SecretsPage() {
         <div>
           <h1 className="font-display text-3xl font-semibold tracking-tight">Project secrets</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Every secret this platform reads on the server. Public values can be revealed and copied;
-            private values are never shown — only whether they are set.
+            Every secret this platform reads on the server. Values are masked by default — reveal them
+            only in a private place, and never share private keys.
           </p>
         </div>
         <Button
@@ -75,13 +75,9 @@ function SecretsPage() {
                 <p className="mt-1 text-xs text-muted-foreground">{s.purpose}</p>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <code className="max-w-full truncate rounded-md bg-muted px-2 py-1 font-mono text-xs text-muted-foreground">
-                    {revealed
-                      ? s.sensitive
-                        ? (s.maskedValue ?? "Not set")
-                        : (s.value ?? "Not set")
-                      : "••••••••••••"}
+                    {revealed ? (s.value ?? "Not set") : (s.maskedValue ?? "Not set")}
                   </code>
-                  {revealed && !s.sensitive && s.value && (
+                  {revealed && s.value && (
                     <Button
                       type="button"
                       variant="ghost"

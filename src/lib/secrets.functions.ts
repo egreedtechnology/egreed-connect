@@ -10,9 +10,9 @@ const SECRETS = [
 ] as const;
 
 /**
- * Lists secret names and whether they are configured.
- * Non-sensitive values are returned so developers can copy them into their own
- * apps; sensitive values are NEVER returned — only a masked placeholder.
+ * Lists secret names, values, and whether they are configured.
+ * Values are only returned to the signed-in owner (requireSupabaseAuth);
+ * the UI masks them until the developer chooses to reveal them.
  */
 export const listProjectSecrets = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -22,7 +22,7 @@ export const listProjectSecrets = createServerFn({ method: "GET" })
       return {
         ...s,
         configured: Boolean(value),
-        value: s.sensitive ? null : (value ?? null),
+        value: value ?? null,
         maskedValue: value ? "•".repeat(16) : null,
       };
     }),

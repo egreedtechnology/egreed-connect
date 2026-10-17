@@ -176,15 +176,20 @@ function KeysPage() {
               size="sm"
               variant="outline"
               onClick={() => {
-                const blob = new Blob([`# EGREED Identity — keep this file private, never commit it\n${envBlock}\n`], {
-                  type: "text/plain",
-                });
+                const blob = new Blob(
+                  [`# EGREED Identity — keep this file private, never commit it\n# Generated ${new Date().toISOString()}\n${envBlock}\n`],
+                  { type: "text/plain;charset=utf-8" },
+                );
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
                 a.download = ".env";
+                a.rel = "noopener";
+                document.body.appendChild(a);
                 a.click();
-                URL.revokeObjectURL(url);
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 30_000);
+                toast.success(".env downloaded — store it outside version control");
               }}
             >
               Download .env

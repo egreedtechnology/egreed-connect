@@ -56,6 +56,7 @@ const GROUPS = [
       { to: "/developer/testing" as const, label: "Integration tester", icon: FlaskConical, exact: false },
       { to: "/developer/logs" as const, label: "Access log", icon: ScrollText, exact: false },
       { to: "/developer/setup" as const, label: "Setup assistant", icon: Sparkles, exact: false },
+      { to: "/developer/secrets" as const, label: "Secrets", icon: Lock, exact: false },
 
     ],
   },

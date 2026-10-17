@@ -9,9 +9,21 @@ const SECRETS = [
   { name: "EGREED_ISSUER", purpose: "Optional override of the public OIDC issuer address.", sensitive: false },
 ] as const;
 
-/** Lists secret names and whether they are configured. Values are never returned. */
+/**
+ * Lists secret names and whether they are configured.
+ * Non-sensitive values are returned so developers can copy them into their own
+ * apps; sensitive values are NEVER returned — only a masked placeholder.
+ */
 export const listProjectSecrets = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async () =>
-    SECRETS.map((s) => ({ ...s, configured: Boolean(process.env[s.name]) })),
+    SECRETS.map((s) => {
+      const value = process.env[s.name];
+      return {
+        ...s,
+        configured: Boolean(value),
+        value: s.sensitive ? null : (value ?? null),
+        maskedValue: value ? "•".repeat(16) : null,
+      };
+    }),
   );

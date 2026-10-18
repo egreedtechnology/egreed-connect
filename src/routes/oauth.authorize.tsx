@@ -166,9 +166,10 @@ function AuthorizePage() {
               <AlertTriangle className="mx-auto size-6 text-destructive" aria-hidden />
               <h1 className="mt-4 font-display text-xl font-semibold">Request not allowed</h1>
               <p className="mt-2 text-sm text-muted-foreground">{error}</p>
-              <Button asChild variant="outline" className="mt-6 w-full">
-                <Link to="/account">Back to your account</Link>
-              </Button>
+              <p className="mt-4 text-xs text-muted-foreground">
+                For your safety this app can't continue. Close this window and contact the app's
+                developer.
+              </p>
             </div>
           ) : !request ? (
             <div className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground">

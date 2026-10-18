@@ -41,7 +41,7 @@ export const checkConnection = createServerFn({ method: "POST" })
     } else {
       const { data: client } = await context.supabase
         .from("oauth_clients")
-        .select("name, is_active, redirect_uris, scopes, client_type")
+        .select("name, is_active, redirect_uris, scopes, client_type, allow_any_redirect")
         .eq("client_id", data.clientId)
         .eq("owner_id", context.userId)
         .maybeSingle();

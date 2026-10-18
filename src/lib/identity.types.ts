@@ -83,6 +83,7 @@ export type OAuthClient = {
   scopes: string[];
   homepage_url: string | null;
   is_active: boolean;
+  allow_any_redirect: boolean;
   created_at: string;
 };
 

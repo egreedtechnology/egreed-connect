@@ -414,7 +414,7 @@ export const listOAuthClients = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<OAuthClient[]> => {
     const { data, error } = await context.supabase
       .from("oauth_clients")
-      .select("id, name, description, client_id, secret_last_four, client_type, redirect_uris, scopes, homepage_url, is_active, created_at")
+      .select("id, name, description, client_id, secret_last_four, client_type, redirect_uris, scopes, homepage_url, is_active, allow_any_redirect, created_at")
       .eq("owner_id", context.userId)
       .order("created_at", { ascending: false });
     if (error) throw new Error("Could not load your applications.");
@@ -430,8 +430,12 @@ export const createOAuthClient = createServerFn({ method: "POST" })
         description: z.string().trim().max(280).optional().or(z.literal("")),
         client_type: z.enum(["confidential", "public"]),
         homepage_url: z.string().trim().url().max(200).optional().or(z.literal("")),
-        redirect_uris: z.array(z.string().trim().url().max(300)).min(1).max(10),
+        redirect_uris: z.array(z.string().trim().url().max(300)).max(10),
+        allow_any_redirect: z.boolean().default(false),
         scopes: z.array(z.enum(OAUTH_SCOPES)).min(1).max(12),
+      })
+      .refine((v) => v.allow_any_redirect || v.redirect_uris.length > 0, {
+        message: "Add at least one redirect URI, or choose to allow any address.",
       })
       .parse(input),
   )
@@ -451,9 +455,10 @@ export const createOAuthClient = createServerFn({ method: "POST" })
         client_type: data.client_type,
         homepage_url: data.homepage_url || null,
         redirect_uris: data.redirect_uris,
+        allow_any_redirect: data.allow_any_redirect,
         scopes: data.scopes,
       })
-      .select("id, name, description, client_id, secret_last_four, client_type, redirect_uris, scopes, homepage_url, is_active, created_at")
+      .select("id, name, description, client_id, secret_last_four, client_type, redirect_uris, scopes, homepage_url, is_active, allow_any_redirect, created_at")
       .single();
     if (error) throw new Error("Could not register the application.");
 
@@ -524,4 +529,40 @@ export const rotateOAuthClientSecret = createServerFn({ method: "POST" })
       description: `Client secret rotated for "${row.name}"`,
     });
     return { secret: creds.secret };
+  });
+
+export const updateOAuthClientRedirects = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        clientId: z.string().uuid(),
+        redirect_uris: z.array(z.string().trim().url().max(300)).max(10),
+        allow_any_redirect: z.boolean(),
+      })
+      .refine((v) => v.allow_any_redirect || v.redirect_uris.length > 0, {
+        message: "Add at least one redirect URI, or choose to allow any address.",
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error, count } = await context.supabase
+      .from("oauth_clients")
+      .update(
+        { redirect_uris: data.redirect_uris, allow_any_redirect: data.allow_any_redirect },
+        { count: "exact" },
+      )
+      .eq("id", data.clientId)
+      .eq("owner_id", context.userId);
+    if (error || !count) throw new Error("Could not update the redirect settings.");
+    await writeAuditLog({
+      userId: context.userId,
+      eventType: "oauth_client.redirects_updated",
+      category: "security",
+      status: data.allow_any_redirect ? "warning" : "success",
+      description: data.allow_any_redirect
+        ? "Redirect allow-list disabled (any https address accepted)"
+        : `Redirect URIs updated (${data.redirect_uris.length})`,
+    });
+    return { ok: true };
   });

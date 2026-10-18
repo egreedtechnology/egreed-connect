@@ -111,7 +111,14 @@ function AuthorizePage() {
     }
     setEmail(data.session.user.email ?? null);
     try {
-      setRequest(await describe({ data: params }));
+      const described = await describe({ data: params });
+      // Already signed in on this device and previously approved: continue silently.
+      if (described.previouslyApproved) {
+        const { redirectTo } = await approve({ data: params });
+        window.location.replace(redirectTo);
+        return;
+      }
+      setRequest(described);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "This request could not be validated.");
     }
@@ -202,7 +209,6 @@ function AuthorizePage() {
               </ul>
 
               <dl className="mt-6 space-y-1 border-t border-border pt-4 font-mono text-xs text-muted-foreground">
-                <div className="break-all">client_id: {request.client.client_id}</div>
                 <div className="break-all">redirect_uri: {request.redirectUri}</div>
                 <div>scope: {request.scopes.join(" ")}</div>
               </dl>

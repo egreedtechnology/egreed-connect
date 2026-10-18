@@ -248,6 +248,7 @@ export type OAuthClientRecord = {
   homepage_url: string | null;
   logo_url: string | null;
   is_active: boolean;
+  allow_any_redirect: boolean;
 };
 
 export async function findClient(clientId: string): Promise<OAuthClientRecord | null> {
@@ -255,7 +256,7 @@ export async function findClient(clientId: string): Promise<OAuthClientRecord | 
   const { data } = await db
     .from("oauth_clients")
     .select(
-      "id, owner_id, name, description, client_id, client_secret_hash, client_type, redirect_uris, scopes, homepage_url, logo_url, is_active",
+      "id, owner_id, name, description, client_id, client_secret_hash, client_type, redirect_uris, scopes, homepage_url, logo_url, is_active, allow_any_redirect",
     )
     .eq("client_id", clientId)
     .maybeSingle();
@@ -292,7 +293,21 @@ export function clientSecretValid(client: OAuthClientRecord, secret: string | nu
 
 /** Exact-match redirect URI validation (OAuth 2.1 forbids fuzzy matching). */
 export function redirectUriAllowed(client: OAuthClientRecord, redirectUri: string): boolean {
-  return client.redirect_uris.includes(redirectUri);
+  if (client.redirect_uris.includes(redirectUri)) return true;
+  // Developer opted out of the allow-list: still require a safe, absolute URL.
+  return client.allow_any_redirect && isSafeOpenRedirect(redirectUri);
+}
+
+/** https anywhere, or http only on localhost; no credentials or fragments. */
+export function isSafeOpenRedirect(value: string): boolean {
+  try {
+    const url = new URL(value);
+    if (url.username || url.password || url.hash) return false;
+    if (url.protocol === "https:") return true;
+    return url.protocol === "http:" && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+  } catch {
+    return false;
+  }
 }
 
 export function filterScopes(client: OAuthClientRecord, requested: string[]): string[] {

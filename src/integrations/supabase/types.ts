@@ -148,6 +148,7 @@ export type Database = {
       }
       oauth_clients: {
         Row: {
+          allow_any_redirect: boolean
           client_id: string
           client_secret_hash: string | null
           client_type: string
@@ -165,6 +166,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          allow_any_redirect?: boolean
           client_id: string
           client_secret_hash?: string | null
           client_type?: string
@@ -182,6 +184,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          allow_any_redirect?: boolean
           client_id?: string
           client_secret_hash?: string | null
           client_type?: string

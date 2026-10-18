@@ -18,10 +18,13 @@ const TITLE = "Sign in — EGREED Identity";
 const DESCRIPTION =
   "Sign in to your EGREED account, or create an EGREED ID to access every product in the ecosystem.";
 
-/** Only same-origin relative paths may be used as a post-sign-in destination. */
+/**
+ * External apps may only send users back to the consent screen; they can never
+ * steer a sign-in into the account dashboard or developer console.
+ */
 function safeNext(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined;
-  if (!value.startsWith("/") || value.startsWith("//")) return undefined;
+  if (!value.startsWith("/oauth/authorize?") || value.includes("//")) return undefined;
   return value;
 }
 

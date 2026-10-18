@@ -1,0 +1,1 @@
+ALTER TABLE public.oauth_clients ADD COLUMN IF NOT EXISTS allow_any_redirect boolean NOT NULL DEFAULT false;

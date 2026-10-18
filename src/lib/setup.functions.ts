@@ -67,8 +67,10 @@ export const checkConnection = createServerFn({ method: "POST" })
         items.push({
           id: "redirects",
           label: "Redirect URLs",
-          ok: client.redirect_uris.length > 0 && httpsOk,
-          detail: httpsOk
+          ok: (client.allow_any_redirect || client.redirect_uris.length > 0) && httpsOk,
+          detail: client.allow_any_redirect
+            ? "Any https address is accepted (allow-list skipped)."
+            : httpsOk
             ? `${client.redirect_uris.length} allowed: ${client.redirect_uris.join(", ")}`
             : "Use https:// redirect URLs (http is only allowed for localhost).",
         });

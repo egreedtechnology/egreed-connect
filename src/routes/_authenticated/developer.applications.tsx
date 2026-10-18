@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ConnectionDetails } from "@/components/developer/ConnectionDetails";
 import { OAUTH_SCOPES, OAUTH_SCOPE_DESCRIPTIONS } from "@/lib/egreed";
@@ -25,6 +26,7 @@ import {
   deleteOAuthClient,
   listOAuthClients,
   setOAuthClientActive,
+  updateOAuthClientRedirects,
 } from "@/lib/identity.functions";
 
 export const Route = createFileRoute("/_authenticated/developer/applications")({
@@ -51,6 +53,7 @@ function ApplicationsPage() {
   const [description, setDescription] = useState("");
   const [homepage, setHomepage] = useState("");
   const [redirects, setRedirects] = useState("");
+  const [allowAny, setAllowAny] = useState(false);
   const [clientType, setClientType] = useState<"confidential" | "public">("confidential");
   const [scopes, setScopes] = useState<string[]>(["openid", "profile", "email"]);
   const [secret, setSecret] = useState<string | null>(null);
@@ -77,6 +80,7 @@ function ApplicationsPage() {
             .split(/[\n,]/)
             .map((uri) => uri.trim())
             .filter(Boolean),
+          allow_any_redirect: allowAny,
           scopes,
         },
       }),
@@ -214,13 +218,14 @@ function ApplicationsPage() {
             <Label htmlFor="app-redirects">Redirect URIs</Label>
             <Textarea
               id="app-redirects"
-              required
+              required={!allowAny}
               rows={3}
               placeholder={"https://app.egreedtech.org/callback\nhttps://localhost:3000/callback"}
               value={redirects}
               onChange={(e) => setRedirects(e.target.value)}
             />
             <p className="text-xs text-muted-foreground">One URI per line.</p>
+            <AllowAnyToggle id="app-allow-any" checked={allowAny} onChange={setAllowAny} />
           </div>
           <div className="space-y-2 sm:col-span-2">
             <Label htmlFor="app-description">Description</Label>
@@ -306,13 +311,7 @@ function ApplicationsPage() {
                   <p className="mt-2 font-mono text-xs text-muted-foreground">
                     {client.scopes.join(" ")}
                   </p>
-                  <ul className="mt-2 space-y-0.5">
-                    {client.redirect_uris.map((uri) => (
-                      <li key={uri} className="font-mono text-xs break-all text-primary">
-                        {uri}
-                      </li>
-                    ))}
-                  </ul>
+                  <RedirectEditor client={client} onSaved={invalidate} />
                   <ConnectionDetails client={client} issuer={origin} />
                 </div>
                 <div className="flex gap-2">
@@ -345,6 +344,106 @@ function ApplicationsPage() {
           )}
         </ul>
       )}
+    </div>
+  );
+}
+
+function AllowAnyToggle({
+  id,
+  checked,
+  onChange,
+}: {
+  id: string;
+  checked: boolean;
+  onChange: (value: boolean) => void;
+}) {
+  return (
+    <div className="flex items-start gap-3 rounded-lg border border-border/60 p-3">
+      <Switch id={id} checked={checked} onCheckedChange={onChange} />
+      <div className="space-y-0.5">
+        <Label htmlFor={id} className="text-sm">
+          Skip the list — allow any address
+        </Label>
+        <p className="text-xs text-muted-foreground">
+          Accepts any https:// address (http only for localhost). Handy while developing, but less
+          safe: turn it off and list your exact addresses before going live.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function RedirectEditor({
+  client,
+  onSaved,
+}: {
+  client: { id: string; redirect_uris: string[]; allow_any_redirect: boolean };
+  onSaved: () => void;
+}) {
+  const update = useServerFn(updateOAuthClientRedirects);
+  const [editing, setEditing] = useState(false);
+  const [text, setText] = useState(client.redirect_uris.join("\n"));
+  const [allowAny, setAllowAny] = useState(client.allow_any_redirect);
+
+  const save = useMutation({
+    mutationFn: () =>
+      update({
+        data: {
+          clientId: client.id,
+          redirect_uris: text
+            .split(/[\n,]/)
+            .map((u) => u.trim())
+            .filter(Boolean),
+          allow_any_redirect: allowAny,
+        },
+      }),
+    onSuccess: () => {
+      toast.success("Redirect settings saved");
+      setEditing(false);
+      onSaved();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  if (!editing) {
+    return (
+      <div className="mt-2 space-y-1">
+        {client.allow_any_redirect && (
+          <Badge variant="destructive">Any address allowed</Badge>
+        )}
+        <ul className="space-y-0.5">
+          {client.redirect_uris.map((uri) => (
+            <li key={uri} className="font-mono text-xs break-all text-primary">
+              {uri}
+            </li>
+          ))}
+        </ul>
+        <Button size="sm" variant="link" className="h-auto p-0 text-xs" onClick={() => setEditing(true)}>
+          Edit redirect URLs
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-3 space-y-2">
+      <Label htmlFor={`redir-${client.id}`}>Redirect URIs</Label>
+      <Textarea
+        id={`redir-${client.id}`}
+        rows={3}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <AllowAnyToggle id={`any-${client.id}`} checked={allowAny} onChange={setAllowAny} />
+      <div className="flex gap-2">
+        <Button size="sm" disabled={save.isPending} onClick={() => save.mutate()}>
+          {save.isPending && <Loader2 className="size-4 animate-spin" />}
+          Save
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>
+          Cancel
+        </Button>
+      </div>
     </div>
   );
 }

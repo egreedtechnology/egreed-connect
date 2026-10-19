@@ -35,7 +35,10 @@ export function AuthenticatorPanel() {
       friendlyName: `Authenticator ${new Date().toLocaleDateString()}`,
     });
     setBusy(false);
-    if (error || !data) return toast.error(error?.message ?? "Could not start setup.");
+    if (error || !data) {
+      toast.error(error?.message ?? "Could not start setup.");
+      return;
+    }
     setEnrolling({ factorId: data.id, qr: data.totp.qr_code, secret: data.totp.secret });
   }
 
@@ -48,7 +51,10 @@ export function AuthenticatorPanel() {
       code: code.trim(),
     });
     setBusy(false);
-    if (error) return toast.error("That code didn't work. Try the newest one.");
+    if (error) {
+      toast.error("That code didn't work. Try the newest one.");
+      return;
+    }
     toast.success("Authenticator app turned on");
     setEnrolling(null);
     setCode("");
@@ -57,7 +63,10 @@ export function AuthenticatorPanel() {
 
   async function remove(id: string) {
     const { error } = await supabase.auth.mfa.unenroll({ factorId: id });
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Authenticator removed");
     void load();
   }

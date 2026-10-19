@@ -121,7 +121,7 @@ function AuthPage() {
     try {
       const { startAuthentication } = await import("@simplewebauthn/browser");
       const { challengeId, options } = await getPasskeyOptions();
-      const response = await startAuthentication({ optionsJSON: options as never });
+      const response = await startAuthentication({ optionsJSON: JSON.parse(options) });
       const { tokenHash } = await verifyPasskey({ data: { challengeId, response } });
       const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "magiclink" });
       if (error) throw error;

@@ -36,7 +36,7 @@ export function PasskeysPanel() {
     try {
       const { startRegistration } = await import("@simplewebauthn/browser");
       const options = await getOptions();
-      const response = await startRegistration({ optionsJSON: options as never });
+      const response = await startRegistration({ optionsJSON: JSON.parse(options) });
       await verify({ data: { name: name.trim() || "Passkey", response } });
       setName("");
       toast.success("Passkey added. You can now sign in with it.");

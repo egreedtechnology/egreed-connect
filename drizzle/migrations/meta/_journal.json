@@ -8,6 +8,13 @@
       "when": 1792336619771,
       "tag": "0000_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792440269031,
+      "tag": "0001_passkeys_and_remote_devices",
+      "breakpoints": true
     }
   ]
 }

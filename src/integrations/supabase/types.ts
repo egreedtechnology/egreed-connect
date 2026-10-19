@@ -423,6 +423,42 @@ export type Database = {
         }
         Relationships: []
       }
+      passkeys: {
+        Row: {
+          counter: number
+          created_at: string
+          credential_id: string
+          id: string
+          last_used_at: string | null
+          name: string
+          public_key: string
+          transports: string[]
+          user_id: string
+        }
+        Insert: {
+          counter?: number
+          created_at?: string
+          credential_id: string
+          id?: string
+          last_used_at?: string | null
+          name?: string
+          public_key: string
+          transports?: string[]
+          user_id: string
+        }
+        Update: {
+          counter?: number
+          created_at?: string
+          credential_id?: string
+          id?: string
+          last_used_at?: string | null
+          name?: string
+          public_key?: string
+          transports?: string[]
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -506,8 +542,11 @@ export type Database = {
           ip_address: string | null
           is_trusted: boolean
           last_seen_at: string
+          last_sign_in_at: string
           location: string | null
+          locked: boolean
           os: string | null
+          signout_requested_at: string | null
           user_id: string
         }
         Insert: {
@@ -520,8 +559,11 @@ export type Database = {
           ip_address?: string | null
           is_trusted?: boolean
           last_seen_at?: string
+          last_sign_in_at?: string
           location?: string | null
+          locked?: boolean
           os?: string | null
+          signout_requested_at?: string | null
           user_id: string
         }
         Update: {
@@ -534,8 +576,11 @@ export type Database = {
           ip_address?: string | null
           is_trusted?: boolean
           last_seen_at?: string
+          last_sign_in_at?: string
           location?: string | null
+          locked?: boolean
           os?: string | null
+          signout_requested_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -591,6 +636,30 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      webauthn_challenges: {
+        Row: {
+          challenge: string
+          expires_at: string
+          id: string
+          kind: string
+          user_id: string | null
+        }
+        Insert: {
+          challenge: string
+          expires_at?: string
+          id?: string
+          kind: string
+          user_id?: string | null
+        }
+        Update: {
+          challenge?: string
+          expires_at?: string
+          id?: string
+          kind?: string
+          user_id?: string | null
         }
         Relationships: []
       }

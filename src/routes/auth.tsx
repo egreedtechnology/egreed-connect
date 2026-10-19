@@ -2,7 +2,9 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Loader2, ShieldCheck } from "lucide-react";
+import { Fingerprint, Loader2, ShieldCheck } from "lucide-react";
+import { MfaChallenge, needsMfa } from "@/components/security/MfaChallenge";
+import { passkeyLoginOptions, passkeyLoginVerify } from "@/lib/passkeys.functions";
 import { EgreedLogo } from "@/components/brand/EgreedLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -80,6 +82,9 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const [mfaPending, setMfaPending] = useState(false);
+  const getPasskeyOptions = useServerFn(passkeyLoginOptions);
+  const verifyPasskey = useServerFn(passkeyLoginVerify);
 
   // `next` carries an intended destination (e.g. an OAuth consent screen a
   // third-party app sent the user to) through the whole sign-in flow.
@@ -93,7 +98,8 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) goNext();
+      if (!data.session) return;
+      void needsMfa().then((n) => (n ? setMfaPending(true) : goNext()));
     });
   }, [goNext]);
 
@@ -103,7 +109,34 @@ function AuthPage() {
     } catch {
       /* audit logging is best-effort and must never block sign-in */
     }
+    if (await needsMfa()) {
+      setMfaPending(true);
+      return;
+    }
     goNext();
+  }
+
+  async function handlePasskey() {
+    setPending("passkey");
+    try {
+      const { startAuthentication } = await import("@simplewebauthn/browser");
+      const { challengeId, options } = await getPasskeyOptions();
+      const response = await startAuthentication({ optionsJSON: options as never });
+      const { tokenHash } = await verifyPasskey({ data: { challengeId, response } });
+      const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "magiclink" });
+      if (error) throw error;
+      toast.success("Welcome back to EGREED");
+      try {
+        await register({ data: { method: "password" } });
+      } catch {
+        /* best-effort */
+      }
+      goNext();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Passkey sign-in was cancelled.");
+    } finally {
+      setPending(null);
+    }
   }
 
   async function handleSignIn(event: React.FormEvent) {
@@ -191,7 +224,15 @@ function AuthPage() {
         </div>
 
         <div className="surface-panel p-6 sm:p-8">
-          {emailSent ? (
+          {mfaPending ? (
+            <MfaChallenge
+              onVerified={goNext}
+              onCancel={async () => {
+                await supabase.auth.signOut();
+                setMfaPending(false);
+              }}
+            />
+          ) : emailSent ? (
             <div className="text-center">
               <ShieldCheck className="mx-auto size-6 text-primary" aria-hidden />
               <h1 className="mt-4 font-display text-xl font-semibold">Confirm your email</h1>
@@ -308,7 +349,7 @@ function AuthPage() {
             </Tabs>
           )}
 
-          {!emailSent && (
+          {!emailSent && !mfaPending && (
             <>
               <div className="my-6 flex items-center gap-3">
                 <Separator className="flex-1" />
@@ -327,6 +368,19 @@ function AuthPage() {
                   <GoogleMark />
                 )}
                 Continue with Google
+              </Button>
+              <Button
+                variant="outline"
+                className="mt-3 w-full"
+                onClick={handlePasskey}
+                disabled={pending !== null}
+              >
+                {pending === "passkey" ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Fingerprint className="size-4" />
+                )}
+                Sign in with a passkey
               </Button>
             </>
           )}

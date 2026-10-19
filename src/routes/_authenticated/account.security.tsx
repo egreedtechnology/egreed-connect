@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
+import { PasskeysPanel } from "@/components/security/PasskeysPanel";
+import { AuthenticatorPanel } from "@/components/security/AuthenticatorPanel";
 import { dismissAlert, getIdentityOverview, listAlerts } from "@/lib/identity.functions";
 import { listConnectedApps, revokeConnectedApp } from "@/lib/oauth.functions";
 
@@ -151,6 +153,9 @@ function SecurityPage() {
           </Button>
         </form>
       </section>
+
+      <PasskeysPanel />
+      <AuthenticatorPanel />
 
       <section className="surface-panel p-6">
         <h2 className="font-display text-lg font-semibold">Security alerts</h2>

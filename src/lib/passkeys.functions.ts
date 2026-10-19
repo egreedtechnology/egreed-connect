@@ -90,7 +90,7 @@ export const passkeyRegisterOptions = createServerFn({ method: "POST" })
     await db
       .from("webauthn_challenges")
       .insert({ user_id: context.userId, challenge: options.challenge, kind: "register" });
-    return JSON.parse(JSON.stringify(options)) as Record<string, unknown>;
+    return JSON.stringify(options);
   });
 
 export const passkeyRegisterVerify = createServerFn({ method: "POST" })
@@ -148,7 +148,7 @@ export const passkeyLoginOptions = createServerFn({ method: "POST" }).handler(as
     .single();
   return {
     challengeId: data!.id as string,
-    options: JSON.parse(JSON.stringify(options)) as Record<string, unknown>,
+    options: JSON.stringify(options),
   };
 });
 

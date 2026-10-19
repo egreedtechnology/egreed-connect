@@ -37,6 +37,9 @@ export type Device = {
   is_trusted: boolean;
   last_seen_at: string;
   created_at: string;
+  locked?: boolean;
+  signout_requested_at?: string | null;
+  last_sign_in_at?: string;
 };
 
 export type AuditEntry = {

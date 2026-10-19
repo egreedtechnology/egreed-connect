@@ -223,6 +223,7 @@ export const registerSession = createServerFn({ method: "POST" })
           ip_address: ctx.ip,
           location: coarseLocation(),
           last_seen_at: new Date().toISOString(),
+          last_sign_in_at: new Date().toISOString(),
         },
         { onConflict: "user_id,device_fingerprint" },
       )
@@ -565,4 +566,57 @@ export const updateOAuthClientRedirects = createServerFn({ method: "POST" })
         : `Redirect URIs updated (${data.redirect_uris.length})`,
     });
     return { ok: true };
+  });
+
+/** Remote device controls: sign out or lock a device from any other device. */
+export const remoteDeviceAction = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({ deviceId: z.string().uuid(), action: z.enum(["signout", "lock", "unlock"]) })
+      .parse(input),
+  )
+  .handler(async ({ data, context }): Promise<{ ok: true }> => {
+    const patch =
+      data.action === "signout"
+        ? { signout_requested_at: new Date().toISOString() }
+        : data.action === "lock"
+          ? { locked: true, signout_requested_at: new Date().toISOString() }
+          : { locked: false };
+    const { error } = await context.supabase
+      .from("trusted_devices")
+      .update(patch)
+      .eq("id", data.deviceId)
+      .eq("user_id", context.userId);
+    if (error) throw new Error("Could not update this device.");
+    await writeAuditLog({
+      userId: context.userId,
+      eventType: `device.remote_${data.action}`,
+      category: "security",
+      status: data.action === "unlock" ? "success" : "warning",
+      description: `Remote ${data.action === "signout" ? "sign-out" : data.action} requested`,
+    });
+    return { ok: true };
+  });
+
+/** Called periodically by the signed-in browser; tells it to sign out if asked remotely. */
+export const checkCurrentDevice = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{ signOut: boolean; locked: boolean; deviceId: string | null }> => {
+    const ctx = readRequestContext(context.userId);
+    const { data } = await context.supabase
+      .from("trusted_devices")
+      .select("id, locked, signout_requested_at, last_sign_in_at")
+      .eq("user_id", context.userId)
+      .eq("device_fingerprint", ctx.fingerprint)
+      .maybeSingle();
+    if (!data) return { signOut: false, locked: false, deviceId: null };
+    await context.supabase
+      .from("trusted_devices")
+      .update({ last_seen_at: new Date().toISOString(), ip_address: ctx.ip })
+      .eq("id", data.id);
+    const requested =
+      !!data.signout_requested_at &&
+      new Date(data.signout_requested_at) > new Date(data.last_sign_in_at);
+    return { signOut: data.locked || requested, locked: data.locked, deviceId: data.id };
   });

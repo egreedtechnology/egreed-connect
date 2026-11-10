@@ -15,6 +15,13 @@
       "when": 1792440269031,
       "tag": "0001_passkeys_and_remote_devices",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794340631722,
+      "tag": "0002_restrict_profiles_read",
+      "breakpoints": true
     }
   ]
 }

@@ -6,7 +6,7 @@ import { MonitorSmartphone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { listDevices, revokeDevice, setDeviceTrust } from "@/lib/identity.functions";
+import { checkCurrentDevice, listDevices, remoteDeviceAction, revokeDevice, setDeviceTrust } from "@/lib/identity.functions";
 
 export const Route = createFileRoute("/_authenticated/account/devices")({
   head: () => ({
@@ -26,6 +26,21 @@ function DevicesPage() {
   const fetchDevices = useServerFn(listDevices);
   const trust = useServerFn(setDeviceTrust);
   const revoke = useServerFn(revokeDevice);
+  const remote = useServerFn(remoteDeviceAction);
+  const current = useServerFn(checkCurrentDevice);
+  const me = useQuery({ queryKey: ["identity", "current-device"], queryFn: () => current() });
+  const remoteMutation = useMutation({
+    mutationFn: (vars: { deviceId: string; action: "signout" | "lock" | "unlock" }) =>
+      remote({ data: vars }),
+    onSuccess: (_d, v) => {
+      toast.success(
+        v.action === "signout" ? "That device will be signed out within 20 seconds"
+        : v.action === "lock" ? "Device locked" : "Device unlocked",
+      );
+      invalidate();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
 
   const { data, isPending } = useQuery({
     queryKey: ["identity", "devices"],
@@ -71,7 +86,9 @@ function DevicesPage() {
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="truncate text-sm font-medium">{device.device_label}</p>
+                  {device.id === me.data?.deviceId && <Badge>This device</Badge>}
                   {device.is_trusted && <Badge variant="secondary">Trusted</Badge>}
+                  {(device as { locked?: boolean }).locked && <Badge variant="destructive">Locked</Badge>}
                 </div>
                 <p className="mt-1 font-mono text-xs text-muted-foreground">
                   {device.browser ?? "unknown"} · {device.os ?? "unknown"} ·{" "}
@@ -81,7 +98,22 @@ function DevicesPage() {
                   Last seen {new Date(device.last_seen_at).toLocaleString()}
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
+                {device.id !== me.data?.deviceId && (
+                  <>
+                    <Button size="sm" variant="outline" disabled={remoteMutation.isPending}
+                      onClick={() => remoteMutation.mutate({ deviceId: device.id, action: "signout" })}>
+                      Sign out
+                    </Button>
+                    <Button size="sm" variant="outline" disabled={remoteMutation.isPending}
+                      onClick={() => remoteMutation.mutate({
+                        deviceId: device.id,
+                        action: (device as { locked?: boolean }).locked ? "unlock" : "lock",
+                      })}>
+                      {(device as { locked?: boolean }).locked ? "Unlock" : "Lock"}
+                    </Button>
+                  </>
+                )}
                 <Button
                   size="sm"
                   variant="outline"

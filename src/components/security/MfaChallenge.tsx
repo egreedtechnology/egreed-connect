@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
+import { BackupCodeRecovery } from "./BackupCodeRecovery";
 
 /** Returns true when this session still needs an authenticator code. */
 export async function needsMfa(): Promise<boolean> {
@@ -14,6 +15,7 @@ export async function needsMfa(): Promise<boolean> {
 export function MfaChallenge({ onVerified, onCancel }: { onVerified: () => void; onCancel?: () => void }) {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
+  const [recovery, setRecovery] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,6 +31,8 @@ export function MfaChallenge({ onVerified, onCancel }: { onVerified: () => void;
     if (error) return toast.error("That code didn't work. Try the newest one.");
     onVerified();
   }
+
+  if (recovery) return <div className="space-y-4"><BackupCodeRecovery /><Button variant="ghost" onClick={() => setRecovery(false)}>Back to authenticator</Button></div>;
 
   return (
     <form onSubmit={submit} className="space-y-4">
@@ -58,6 +62,7 @@ export function MfaChallenge({ onVerified, onCancel }: { onVerified: () => void;
           </Button>
         )}
       </div>
+      <Button type="button" variant="link" className="h-auto px-0" onClick={() => setRecovery(true)}>Use a backup code instead</Button>
     </form>
   );
 }

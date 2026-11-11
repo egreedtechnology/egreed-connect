@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { PasskeysPanel } from "@/components/security/PasskeysPanel";
 import { AuthenticatorPanel } from "@/components/security/AuthenticatorPanel";
+import { BackupCodesPanel } from "@/components/security/BackupCodesPanel";
 import { dismissAlert, getIdentityOverview, listAlerts } from "@/lib/identity.functions";
 import { listConnectedApps, revokeConnectedApp } from "@/lib/oauth.functions";
 
@@ -156,6 +157,7 @@ function SecurityPage() {
 
       <PasskeysPanel />
       <AuthenticatorPanel />
+      <BackupCodesPanel />
 
       <section className="surface-panel p-6">
         <h2 className="font-display text-lg font-semibold">Security alerts</h2>

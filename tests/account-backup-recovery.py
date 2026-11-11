@@ -128,6 +128,13 @@ async def main():
             audit = api(f"/rest/v1/audit_logs?user_id=eq.{uid}&event_type=eq.auth.backup_code_recovery&select=id")
             assert len(audit) == 1
             print("PASS: successful recovery is audited")
+            # The first two attempts succeeded/failed above; the sixth must be refused.
+            for _ in range(4):
+                await page.get_by_label("Backup code", exact=True).fill(secrets.token_hex(16))
+                await page.get_by_role("button", name="Recover account", exact=True).click()
+                await page.wait_for_timeout(500)
+            await page.get_by_text("Too many recovery attempts. Try again in 15 minutes.", exact=True).wait_for()
+            print("PASS: repeated recovery attempts are rate limited")
             await browser.close()
     finally:
         for table in ["account_backup_codes", "passkeys", "webauthn_challenges", "audit_logs", "devices", "security_alerts"]:

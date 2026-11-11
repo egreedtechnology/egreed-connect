@@ -15,6 +15,10 @@ export const Route = createFileRoute("/_authenticated/account/profile")({
     meta: [
       { title: "Profile — EGREED Identity" },
       { name: "description", content: "Manage the identity details shared across EGREED products." },
+      { property: "og:title", content: "Profile — EGREED Identity" },
+      { property: "og:description", content: "Manage the identity details shared across EGREED products." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ProfilePage,

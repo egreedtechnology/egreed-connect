@@ -14,6 +14,10 @@ export const Route = createFileRoute("/_authenticated/developer/secrets")({
     meta: [
       { title: "Project secrets — EGREED Identity" },
       { name: "description", content: "See which secrets EGREED Identity uses and whether each is configured." },
+      { property: "og:title", content: "Project secrets — EGREED Identity" },
+      { property: "og:description", content: "See which secrets EGREED Identity uses and whether each is configured." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: SecretsPage,

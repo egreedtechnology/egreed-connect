@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Fingerprint, Loader2, ShieldCheck } from "lucide-react";
 import { MfaChallenge, needsMfa } from "@/components/security/MfaChallenge";
+import { BackupCodeRecovery } from "@/components/security/BackupCodeRecovery";
 import { passkeyLoginOptions, passkeyLoginVerify } from "@/lib/passkeys.functions";
 import { EgreedLogo } from "@/components/brand/EgreedLogo";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,8 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AuthPage,
@@ -131,7 +134,7 @@ function AuthPage() {
       } catch {
         /* best-effort */
       }
-      goNext();
+      await afterAuth("password");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Passkey sign-in was cancelled.");
     } finally {
@@ -329,6 +332,8 @@ function AuthPage() {
               </TabsContent>
 
               <TabsContent value="recovery" className="mt-6">
+                <BackupCodeRecovery />
+                <Separator className="my-6" />
                 <form onSubmit={handleRecovery} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="recovery-email">Email</Label>

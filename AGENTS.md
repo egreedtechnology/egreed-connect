@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Account recovery uses hashed, server-only backup codes with atomic consumption and persistent attempt limits; a redeemed code resets lost authenticators and passkeys before issuing a fresh sign-in token.

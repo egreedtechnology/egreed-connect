@@ -13,6 +13,8 @@
 - [x] .env download + connection check after API key creation
 - [x] AI setup assistant (/developer/setup)
 
+- [x] One-time backup codes: generation, secure recovery, and verified tests
+
 ## Ideas / next
 - [ ] Organization-level integration log (not just per-user)
 - [ ] Webhook delivery for security + integration events

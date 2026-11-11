@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_backup_codes: {
+        Row: {
+          code_hash: string
+          created_at: string
+          id: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          code_hash: string
+          created_at?: string
+          id?: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          code_hash?: string
+          created_at?: string
+          id?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      account_recovery_limits: {
+        Row: {
+          attempts: number
+          bucket_hash: string
+          window_start: string
+        }
+        Insert: {
+          attempts?: number
+          bucket_hash: string
+          window_start?: string
+        }
+        Update: {
+          attempts?: number
+          bucket_hash?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       api_keys: {
         Row: {
           created_at: string
@@ -668,6 +710,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      allow_account_recovery_attempt: {
+        Args: { p_bucket: string }
+        Returns: boolean
+      }
+      consume_account_backup_code: { Args: { p_hash: string }; Returns: string }
       has_org_role: {
         Args: {
           _org_id: string
@@ -686,6 +733,10 @@ export type Database = {
       is_org_member: {
         Args: { _org_id: string; _user_id: string }
         Returns: boolean
+      }
+      replace_account_backup_codes: {
+        Args: { p_hashes: string[]; p_user: string }
+        Returns: undefined
       }
     }
     Enums: {

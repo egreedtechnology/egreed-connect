@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { PasskeysPanel } from "@/components/security/PasskeysPanel";
 import { AuthenticatorPanel } from "@/components/security/AuthenticatorPanel";
+import { BackupCodesPanel } from "@/components/security/BackupCodesPanel";
 import { dismissAlert, getIdentityOverview, listAlerts } from "@/lib/identity.functions";
 import { listConnectedApps, revokeConnectedApp } from "@/lib/oauth.functions";
 
@@ -24,6 +25,10 @@ export const Route = createFileRoute("/_authenticated/account/security")({
         name: "description",
         content: "Change your password, review security alerts and track your EGREED security score.",
       },
+      { property: "og:title", content: "Security — EGREED Identity" },
+      { property: "og:description", content: "Change your password, review security alerts and track your EGREED security score." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: SecurityPage,
@@ -156,6 +161,7 @@ function SecurityPage() {
 
       <PasskeysPanel />
       <AuthenticatorPanel />
+      <BackupCodesPanel />
 
       <section className="surface-panel p-6">
         <h2 className="font-display text-lg font-semibold">Security alerts</h2>

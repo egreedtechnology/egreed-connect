@@ -64,7 +64,7 @@ async def main():
             print("PASS: ten backup codes generated through signed-in UI")
             # Regeneration invalidates the original set, including its hashes.
             await page.get_by_role("button", name="Generate new codes", exact=True).click()
-            await page.wait_for_function("old => document.querySelector('[data-backup-code]')?.textContent !== old", old_codes[0])
+            await page.wait_for_function("old => document.querySelector('[data-backup-code]')?.textContent !== old", arg=old_codes[0])
             codes = await panel.locator("[data-backup-code]").all_text_contents()
             rows = api(f"/rest/v1/account_backup_codes?user_id=eq.{uid}&select=code_hash,used_at")
             assert len(rows) == 10

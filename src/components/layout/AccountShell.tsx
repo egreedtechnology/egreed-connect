@@ -8,6 +8,7 @@ import {
 
   KeyRound,
   LayoutDashboard,
+  LayoutGrid,
   LogOut,
   Menu,
   MonitorSmartphone,
@@ -35,6 +36,7 @@ const GROUPS = [
     title: "Account",
     items: [
       { to: "/account" as const, label: "Overview", icon: LayoutDashboard, exact: true },
+      { to: "/account/apps" as const, label: "Your apps", icon: LayoutGrid, exact: false },
       { to: "/account/profile" as const, label: "Profile", icon: UserRound, exact: false },
       { to: "/account/security" as const, label: "Security", icon: ShieldCheck, exact: false },
       { to: "/account/devices" as const, label: "Devices", icon: MonitorSmartphone, exact: false },

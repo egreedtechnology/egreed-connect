@@ -92,7 +92,12 @@ export function readRequestContext(userId: string): RequestContext {
   let ip: string | null = null;
   let userAgent: string | null = null;
   try {
-    ip = getRequestIP({ xForwardedFor: true }) ?? null;
+    ip =
+      getRequestHeader("cf-connecting-ip") ??
+      getRequestHeader("true-client-ip") ??
+      getRequestHeader("x-real-ip") ??
+      getRequestIP({ xForwardedFor: true }) ??
+      null;
     userAgent = getRequestHeader("user-agent") ?? null;
   } catch {
     // Outside a request scope (should not happen inside server fns).

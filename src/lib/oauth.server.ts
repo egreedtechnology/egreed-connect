@@ -552,6 +552,8 @@ export async function logIntegrationEvent(input: {
         description: input.description,
         ip_address:
           headers?.get("cf-connecting-ip") ??
+          headers?.get("true-client-ip") ??
+          headers?.get("x-real-ip") ??
           headers?.get("x-forwarded-for")?.split(",")[0]?.trim() ??
           null,
         user_agent: headers?.get("user-agent") ?? null,

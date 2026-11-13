@@ -38,6 +38,8 @@ type Search = {
   nonce?: string | undefined;
   code_challenge?: string | undefined;
   code_challenge_method?: "S256" | "plain" | undefined;
+  /** OIDC `prompt=create` or `screen_hint=signup` opens the sign-up form. */
+  signup?: boolean | undefined;
 };
 
 function str(value: unknown): string | undefined {
@@ -55,6 +57,8 @@ export const Route = createFileRoute("/oauth/authorize")({
     state: str(search["state"]),
     nonce: str(search["nonce"]),
     code_challenge: str(search["code_challenge"]),
+    signup:
+      search["prompt"] === "create" || search["screen_hint"] === "signup" || undefined,
     code_challenge_method:
       search["code_challenge_method"] === "plain"
         ? "plain"
@@ -108,7 +112,8 @@ function AuthorizePage() {
     if (!data.session) {
       // Preserve the full consent URL so the user returns here after sign-in.
       const next = `${window.location.pathname}${window.location.search}`;
-      window.location.replace(`/auth?next=${encodeURIComponent(next)}`);
+      const signup = search.signup ? "&mode=signup" : "";
+      window.location.replace(`/auth?next=${encodeURIComponent(next)}${signup}`);
       return;
     }
     setEmail(data.session.user.email ?? null);

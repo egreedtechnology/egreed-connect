@@ -53,6 +53,15 @@ export const describeAuthorizationRequest = createServerFn({ method: "POST" })
     const scopes = filterScopes(client, requested);
     if (scopes.length === 0) throw new Error("None of the requested scopes are allowed.");
 
+    const { writeAuditLog } = await import("./identity.server");
+    await writeAuditLog({
+      userId: context.userId,
+      eventType: "oauth.access_requested",
+      category: "integration",
+      description: `${client.name} requested access to ${scopes.join(", ")}`,
+      metadata: { client_id: client.client_id, scopes, redirect_uri: data.redirect_uri },
+    });
+
     const { data: consent } = await context.supabase
       .from("oauth_consents")
       .select("scopes")

@@ -35,9 +35,10 @@ export const Route = createFileRoute("/auth")({
   // Session state lives in browser storage, so render this screen client-side
   // only — SSR would emit markup that never matches the hydrated result.
   ssr: false,
-  validateSearch: (search: Record<string, unknown>): { next?: string } => {
+  validateSearch: (search: Record<string, unknown>): { next?: string; mode?: "signup" } => {
     const next = safeNext(search["next"]);
-    return next ? { next } : {};
+    const mode = search["mode"] === "signup" ? ("signup" as const) : undefined;
+    return { ...(next ? { next } : {}), ...(mode ? { mode } : {}) };
   },
   head: () => ({
     meta: [
@@ -77,10 +78,10 @@ function GoogleMark() {
 
 function AuthPage() {
   const navigate = useNavigate();
-  const { next } = Route.useSearch();
+  const { next, mode: initialMode } = Route.useSearch();
   const register = useServerFn(registerSession);
   const [pending, setPending] = useState<string | null>(null);
-  const [mode, setMode] = useState("signin");
+  const [mode, setMode] = useState<string>(initialMode ?? "signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");

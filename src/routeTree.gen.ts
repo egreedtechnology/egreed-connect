@@ -20,8 +20,10 @@ import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authenticated/developer'
 import { Route as AuthenticatedOrganizationsRouteImport } from './routes/_authenticated/organizations'
 import { Route as OauthAuthorizeRouteImport } from './routes/oauth.authorize'
+import { Route as OauthLogoutRouteImport } from './routes/oauth.logout'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account.index'
 import { Route as AuthenticatedAccountActivityRouteImport } from './routes/_authenticated/account.activity'
+import { Route as AuthenticatedAccountAppsRouteImport } from './routes/_authenticated/account.apps'
 import { Route as AuthenticatedAccountDevicesRouteImport } from './routes/_authenticated/account.devices'
 import { Route as AuthenticatedAccountPrivacyRouteImport } from './routes/_authenticated/account.privacy'
 import { Route as AuthenticatedAccountProfileRouteImport } from './routes/_authenticated/account.profile'
@@ -102,6 +104,11 @@ const OauthAuthorizeRoute = OauthAuthorizeRouteImport.update({
   path: '/oauth/authorize',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OauthLogoutRoute = OauthLogoutRouteImport.update({
+  id: '/oauth/logout',
+  path: '/oauth/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAccountIndexRoute =
   AuthenticatedAccountIndexRouteImport.update({
     id: '/',
@@ -112,6 +119,12 @@ const AuthenticatedAccountActivityRoute =
   AuthenticatedAccountActivityRouteImport.update({
     id: '/activity',
     path: '/activity',
+    getParentRoute: () => AuthenticatedAccountRoute,
+  } as any)
+const AuthenticatedAccountAppsRoute =
+  AuthenticatedAccountAppsRouteImport.update({
+    id: '/apps',
+    path: '/apps',
     getParentRoute: () => AuthenticatedAccountRoute,
   } as any)
 const AuthenticatedAccountDevicesRoute =
@@ -257,7 +270,9 @@ export interface FileRoutesByFullPath {
   '/developer': typeof AuthenticatedDeveloperRouteWithChildren
   '/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
   '/oauth/authorize': typeof OauthAuthorizeRoute
+  '/oauth/logout': typeof OauthLogoutRoute
   '/account/activity': typeof AuthenticatedAccountActivityRoute
+  '/account/apps': typeof AuthenticatedAccountAppsRoute
   '/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
   '/account/profile': typeof AuthenticatedAccountProfileRoute
@@ -291,7 +306,9 @@ export interface FileRoutesByTo {
   '/status': typeof StatusRoute
   '/.well-known/openid-configuration': typeof DotwellKnownOpenidConfigurationRoute
   '/oauth/authorize': typeof OauthAuthorizeRoute
+  '/oauth/logout': typeof OauthLogoutRoute
   '/account/activity': typeof AuthenticatedAccountActivityRoute
+  '/account/apps': typeof AuthenticatedAccountAppsRoute
   '/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/account/privacy': typeof AuthenticatedAccountPrivacyRoute
   '/account/profile': typeof AuthenticatedAccountProfileRoute
@@ -330,7 +347,9 @@ export interface FileRoutesById {
   '/_authenticated/developer': typeof AuthenticatedDeveloperRouteWithChildren
   '/_authenticated/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
   '/oauth/authorize': typeof OauthAuthorizeRoute
+  '/oauth/logout': typeof OauthLogoutRoute
   '/_authenticated/account/activity': typeof AuthenticatedAccountActivityRoute
+  '/_authenticated/account/apps': typeof AuthenticatedAccountAppsRoute
   '/_authenticated/account/devices': typeof AuthenticatedAccountDevicesRoute
   '/_authenticated/account/privacy': typeof AuthenticatedAccountPrivacyRoute
   '/_authenticated/account/profile': typeof AuthenticatedAccountProfileRoute
@@ -369,7 +388,9 @@ export interface FileRouteTypes {
     | '/developer'
     | '/organizations'
     | '/oauth/authorize'
+    | '/oauth/logout'
     | '/account/activity'
+    | '/account/apps'
     | '/account/devices'
     | '/account/privacy'
     | '/account/profile'
@@ -403,7 +424,9 @@ export interface FileRouteTypes {
     | '/status'
     | '/.well-known/openid-configuration'
     | '/oauth/authorize'
+    | '/oauth/logout'
     | '/account/activity'
+    | '/account/apps'
     | '/account/devices'
     | '/account/privacy'
     | '/account/profile'
@@ -441,7 +464,9 @@ export interface FileRouteTypes {
     | '/_authenticated/developer'
     | '/_authenticated/organizations'
     | '/oauth/authorize'
+    | '/oauth/logout'
     | '/_authenticated/account/activity'
+    | '/_authenticated/account/apps'
     | '/_authenticated/account/devices'
     | '/_authenticated/account/privacy'
     | '/_authenticated/account/profile'
@@ -477,6 +502,7 @@ export interface RootRouteChildren {
   StatusRoute: typeof StatusRoute
   DotwellKnownOpenidConfigurationRoute: typeof DotwellKnownOpenidConfigurationRoute
   OauthAuthorizeRoute: typeof OauthAuthorizeRoute
+  OauthLogoutRoute: typeof OauthLogoutRoute
   ApiPublicOauthIntrospectRoute: typeof ApiPublicOauthIntrospectRoute
   ApiPublicOauthJwksRoute: typeof ApiPublicOauthJwksRoute
   ApiPublicOauthOpenidConfigurationRoute: typeof ApiPublicOauthOpenidConfigurationRoute
@@ -568,6 +594,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OauthAuthorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/oauth/logout': {
+      id: '/oauth/logout'
+      path: '/oauth/logout'
+      fullPath: '/oauth/logout'
+      preLoaderRoute: typeof OauthLogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/account/': {
       id: '/_authenticated/account/'
       path: '/'
@@ -580,6 +613,13 @@ declare module '@tanstack/react-router' {
       path: '/activity'
       fullPath: '/account/activity'
       preLoaderRoute: typeof AuthenticatedAccountActivityRouteImport
+      parentRoute: typeof AuthenticatedAccountRoute
+    }
+    '/_authenticated/account/apps': {
+      id: '/_authenticated/account/apps'
+      path: '/apps'
+      fullPath: '/account/apps'
+      preLoaderRoute: typeof AuthenticatedAccountAppsRouteImport
       parentRoute: typeof AuthenticatedAccountRoute
     }
     '/_authenticated/account/devices': {
@@ -748,6 +788,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAccountRouteChildren {
   AuthenticatedAccountActivityRoute: typeof AuthenticatedAccountActivityRoute
+  AuthenticatedAccountAppsRoute: typeof AuthenticatedAccountAppsRoute
   AuthenticatedAccountDevicesRoute: typeof AuthenticatedAccountDevicesRoute
   AuthenticatedAccountPrivacyRoute: typeof AuthenticatedAccountPrivacyRoute
   AuthenticatedAccountProfileRoute: typeof AuthenticatedAccountProfileRoute
@@ -757,6 +798,7 @@ interface AuthenticatedAccountRouteChildren {
 
 const AuthenticatedAccountRouteChildren: AuthenticatedAccountRouteChildren = {
   AuthenticatedAccountActivityRoute: AuthenticatedAccountActivityRoute,
+  AuthenticatedAccountAppsRoute: AuthenticatedAccountAppsRoute,
   AuthenticatedAccountDevicesRoute: AuthenticatedAccountDevicesRoute,
   AuthenticatedAccountPrivacyRoute: AuthenticatedAccountPrivacyRoute,
   AuthenticatedAccountProfileRoute: AuthenticatedAccountProfileRoute,
@@ -834,6 +876,7 @@ const rootRouteChildren: RootRouteChildren = {
   StatusRoute: StatusRoute,
   DotwellKnownOpenidConfigurationRoute: DotwellKnownOpenidConfigurationRoute,
   OauthAuthorizeRoute: OauthAuthorizeRoute,
+  OauthLogoutRoute: OauthLogoutRoute,
   ApiPublicOauthIntrospectRoute: ApiPublicOauthIntrospectRoute,
   ApiPublicOauthJwksRoute: ApiPublicOauthJwksRoute,
   ApiPublicOauthOpenidConfigurationRoute:

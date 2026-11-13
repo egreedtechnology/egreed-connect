@@ -24,6 +24,7 @@ export const Route = createFileRoute("/.well-known/openid-configuration")({
           jwks_uri: `${issuer}/api/public/oauth/jwks`,
           introspection_endpoint: `${issuer}/api/public/oauth/introspect`,
           revocation_endpoint: `${issuer}/api/public/oauth/revoke`,
+          end_session_endpoint: `${issuer}/oauth/logout`,
           scopes_supported: [...OAUTH_SCOPES, ...API_SCOPES],
           response_types_supported: ["code"],
           response_modes_supported: ["query"],

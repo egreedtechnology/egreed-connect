@@ -47,6 +47,9 @@ import { Route as ApiPublicV1AuditRouteImport } from './routes/api/public/v1/aud
 import { Route as ApiPublicV1MeRouteImport } from './routes/api/public/v1/me'
 import { Route as ApiPublicV1OrganizationsRouteImport } from './routes/api/public/v1/organizations'
 import { Route as ApiPublicV1SessionsRouteImport } from './routes/api/public/v1/sessions'
+import { Route as ApiPublicV1AuthSigninRouteImport } from './routes/api/public/v1/auth/signin'
+import { Route as ApiPublicV1AuthSignupRouteImport } from './routes/api/public/v1/auth/signup'
+import { Route as ApiPublicV1UsersIdDataRouteImport } from './routes/api/public/v1/users/$id.data'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -258,6 +261,21 @@ const ApiPublicV1SessionsRoute = ApiPublicV1SessionsRouteImport.update({
   path: '/api/public/v1/sessions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1AuthSigninRoute = ApiPublicV1AuthSigninRouteImport.update({
+  id: '/api/public/v1/auth/signin',
+  path: '/api/public/v1/auth/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1AuthSignupRoute = ApiPublicV1AuthSignupRouteImport.update({
+  id: '/api/public/v1/auth/signup',
+  path: '/api/public/v1/auth/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1UsersIdDataRoute = ApiPublicV1UsersIdDataRouteImport.update({
+  id: '/api/public/v1/users/$id/data',
+  path: '/api/public/v1/users/$id/data',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -297,6 +315,9 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/api/public/v1/organizations': typeof ApiPublicV1OrganizationsRoute
   '/api/public/v1/sessions': typeof ApiPublicV1SessionsRoute
+  '/api/public/v1/auth/signin': typeof ApiPublicV1AuthSigninRoute
+  '/api/public/v1/auth/signup': typeof ApiPublicV1AuthSignupRoute
+  '/api/public/v1/users/$id/data': typeof ApiPublicV1UsersIdDataRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -333,6 +354,9 @@ export interface FileRoutesByTo {
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/api/public/v1/organizations': typeof ApiPublicV1OrganizationsRoute
   '/api/public/v1/sessions': typeof ApiPublicV1SessionsRoute
+  '/api/public/v1/auth/signin': typeof ApiPublicV1AuthSigninRoute
+  '/api/public/v1/auth/signup': typeof ApiPublicV1AuthSignupRoute
+  '/api/public/v1/users/$id/data': typeof ApiPublicV1UsersIdDataRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -374,6 +398,9 @@ export interface FileRoutesById {
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/api/public/v1/organizations': typeof ApiPublicV1OrganizationsRoute
   '/api/public/v1/sessions': typeof ApiPublicV1SessionsRoute
+  '/api/public/v1/auth/signin': typeof ApiPublicV1AuthSigninRoute
+  '/api/public/v1/auth/signup': typeof ApiPublicV1AuthSignupRoute
+  '/api/public/v1/users/$id/data': typeof ApiPublicV1UsersIdDataRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -415,6 +442,9 @@ export interface FileRouteTypes {
     | '/api/public/v1/me'
     | '/api/public/v1/organizations'
     | '/api/public/v1/sessions'
+    | '/api/public/v1/auth/signin'
+    | '/api/public/v1/auth/signup'
+    | '/api/public/v1/users/$id/data'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -451,6 +481,9 @@ export interface FileRouteTypes {
     | '/api/public/v1/me'
     | '/api/public/v1/organizations'
     | '/api/public/v1/sessions'
+    | '/api/public/v1/auth/signin'
+    | '/api/public/v1/auth/signup'
+    | '/api/public/v1/users/$id/data'
   id:
     | '__root__'
     | '/'
@@ -491,6 +524,9 @@ export interface FileRouteTypes {
     | '/api/public/v1/me'
     | '/api/public/v1/organizations'
     | '/api/public/v1/sessions'
+    | '/api/public/v1/auth/signin'
+    | '/api/public/v1/auth/signup'
+    | '/api/public/v1/users/$id/data'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -513,6 +549,9 @@ export interface RootRouteChildren {
   ApiPublicV1MeRoute: typeof ApiPublicV1MeRoute
   ApiPublicV1OrganizationsRoute: typeof ApiPublicV1OrganizationsRoute
   ApiPublicV1SessionsRoute: typeof ApiPublicV1SessionsRoute
+  ApiPublicV1AuthSigninRoute: typeof ApiPublicV1AuthSigninRoute
+  ApiPublicV1AuthSignupRoute: typeof ApiPublicV1AuthSignupRoute
+  ApiPublicV1UsersIdDataRoute: typeof ApiPublicV1UsersIdDataRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -783,6 +822,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1SessionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/auth/signin': {
+      id: '/api/public/v1/auth/signin'
+      path: '/api/public/v1/auth/signin'
+      fullPath: '/api/public/v1/auth/signin'
+      preLoaderRoute: typeof ApiPublicV1AuthSigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/auth/signup': {
+      id: '/api/public/v1/auth/signup'
+      path: '/api/public/v1/auth/signup'
+      fullPath: '/api/public/v1/auth/signup'
+      preLoaderRoute: typeof ApiPublicV1AuthSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/users/$id/data': {
+      id: '/api/public/v1/users/$id/data'
+      path: '/api/public/v1/users/$id/data'
+      fullPath: '/api/public/v1/users/$id/data'
+      preLoaderRoute: typeof ApiPublicV1UsersIdDataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -888,6 +948,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicV1MeRoute: ApiPublicV1MeRoute,
   ApiPublicV1OrganizationsRoute: ApiPublicV1OrganizationsRoute,
   ApiPublicV1SessionsRoute: ApiPublicV1SessionsRoute,
+  ApiPublicV1AuthSigninRoute: ApiPublicV1AuthSigninRoute,
+  ApiPublicV1AuthSignupRoute: ApiPublicV1AuthSignupRoute,
+  ApiPublicV1UsersIdDataRoute: ApiPublicV1UsersIdDataRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

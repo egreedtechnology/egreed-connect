@@ -29,6 +29,13 @@
       "when": 1794371269133,
       "tag": "0003_one_time_account_backup_codes",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794682897768,
+      "tag": "0004_business_user_data",
+      "breakpoints": true
     }
   ]
 }

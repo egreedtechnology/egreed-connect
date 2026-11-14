@@ -14,7 +14,10 @@ export function DeveloperModeCard() {
     setSaving(true);
     const { error } = await supabase.auth.updateUser({ data: { developer_mode: value } });
     setSaving(false);
-    if (error) return toast.error("Could not update Developer mode.");
+    if (error) {
+      toast.error("Could not update Developer mode.");
+      return;
+    }
     await queryClient.invalidateQueries({ queryKey: ["developer-mode"] });
     toast.success(value ? "Developer mode on" : "Developer mode off");
   }

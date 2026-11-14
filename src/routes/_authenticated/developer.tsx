@@ -5,7 +5,7 @@ import { fetchDeveloperAccess } from "@/hooks/use-developer-mode";
 export const Route = createFileRoute("/_authenticated/developer")({
   beforeLoad: async () => {
     const access = await fetchDeveloperAccess();
-    if (!access.enabled) throw redirect({ to: "/account/privacy", search: {} as never });
+    if (!access.enabled) throw redirect({ to: "/account/privacy" });
   },
   component: () => (
     <AccountShell>

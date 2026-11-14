@@ -51,6 +51,8 @@ export const API_SCOPES = [
   "organizations:read",
   "organizations:write",
   "audit:read",
+  "users:read",
+  "users:write",
 ] as const;
 
 export type ApiScope = (typeof API_SCOPES)[number];
@@ -104,6 +106,22 @@ export const API_SCOPE_DETAILS: Record<
     description: "Security and account events for SIEM forwarding.",
     endpoints: ["GET /api/public/v1/audit"],
     risk: "medium",
+  },
+  "users:read": {
+    label: "Read your users' data",
+    description: "Read data your business stored for people who use your own sign-up/sign-in form.",
+    endpoints: ["GET /api/public/v1/users/:id/data"],
+    risk: "medium",
+  },
+  "users:write": {
+    label: "Custom sign-up / sign-in",
+    description: "Sign people up and in from your own form, and store data for them.",
+    endpoints: [
+      "POST /api/public/v1/auth/signup",
+      "POST /api/public/v1/auth/signin",
+      "PUT /api/public/v1/users/:id/data",
+    ],
+    risk: "high",
   },
 };
 

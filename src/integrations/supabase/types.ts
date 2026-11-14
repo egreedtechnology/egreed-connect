@@ -143,6 +143,30 @@ export type Database = {
         }
         Relationships: []
       }
+      business_user_data: {
+        Row: {
+          business_id: string
+          created_at: string
+          data: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          data?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          data?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       oauth_authorization_codes: {
         Row: {
           client_id: string

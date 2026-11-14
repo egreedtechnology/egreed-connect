@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { registerSession } from "@/lib/identity.functions";
 import { EGREED } from "@/lib/egreed";
 
@@ -52,29 +51,6 @@ export const Route = createFileRoute("/auth")({
   }),
   component: AuthPage,
 });
-
-function GoogleMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-4" aria-hidden>
-      <path
-        fill="#4285F4"
-        d="M23.5 12.3c0-.9-.1-1.5-.2-2.2H12v4.1h6.6c-.1 1.1-.8 2.8-2.5 3.9l-.1.1 3.7 2.8c2.1-2 3.8-5 3.8-8.7Z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 24c3.4 0 6.2-1.1 8.3-3l-3.9-3c-1.1.7-2.5 1.2-4.4 1.2-3.3 0-6.1-2.2-7.1-5.2l-.1.1-3.8 2.9C3 21.2 7.2 24 12 24Z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M4.9 14c-.3-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5V8.9L1 6c-.8 1.7-1.3 3.6-1.3 5.6s.5 3.9 1.3 5.6l3.9-3.2Z"
-      />
-      <path
-        fill="#EA4335"
-        d="M12 4.7c2.3 0 3.9 1 4.8 1.9l3.5-3.4C18.2 1.2 15.4 0 12 0 7.2 0 3 2.8 1 6.9l3.9 3C5.9 6.9 8.7 4.7 12 4.7Z"
-      />
-    </svg>
-  );
-}
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -184,22 +160,6 @@ function AuthPage() {
     }
     toast.success("Your EGREED ID is ready");
     await afterAuth("signup");
-  }
-
-  async function handleGoogle() {
-    setPending("google");
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: next
-        ? `${window.location.origin}/auth?next=${encodeURIComponent(next)}`
-        : window.location.origin,
-    });
-    if (result.error) {
-      setPending(null);
-      toast.error("Google sign-in failed. Please try again.");
-      return;
-    }
-    if (result.redirected) return;
-    await afterAuth("oauth");
   }
 
   async function handleRecovery(event: React.FormEvent) {
@@ -365,19 +325,6 @@ function AuthPage() {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={handleGoogle}
-                disabled={pending !== null}
-              >
-                {pending === "google" ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <GoogleMark />
-                )}
-                Continue with Google
-              </Button>
-              <Button
-                variant="outline"
-                className="mt-3 w-full"
                 onClick={handlePasskey}
                 disabled={pending !== null}
               >

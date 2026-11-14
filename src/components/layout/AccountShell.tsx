@@ -29,6 +29,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { initials, useCurrentUser } from "@/hooks/use-current-user";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { useDeveloperMode } from "@/hooks/use-developer-mode";
 import { DeviceGuard } from "@/components/security/DeviceGuard";
 
 const GROUPS = [
@@ -66,9 +67,11 @@ const GROUPS = [
 ] as const;
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+  const { data: dev } = useDeveloperMode();
+  const groups = GROUPS.filter((g) => g.title !== "Developer" || dev?.enabled);
   return (
     <div className="flex flex-col gap-6">
-      {GROUPS.map((group) => (
+      {groups.map((group) => (
         <div key={group.title}>
           <p className="px-3 text-[0.68rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
             {group.title}

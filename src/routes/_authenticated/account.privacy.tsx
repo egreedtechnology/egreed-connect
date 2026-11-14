@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
+import { DeveloperModeCard } from "@/components/account/DeveloperModeCard";
 import { getIdentityOverview, updatePreferences } from "@/lib/identity.functions";
 
 export const Route = createFileRoute("/_authenticated/account/privacy")({
@@ -109,6 +110,8 @@ function PrivacyPage() {
           Choose what EGREED sends you and how your profile is shared.
         </p>
       </header>
+
+      <DeveloperModeCard />
 
       <section className="surface-panel divide-y divide-border p-2">
         {TOGGLES.map((toggle) => (

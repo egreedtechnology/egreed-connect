@@ -27,8 +27,8 @@ function ipOf(request: Request): string {
 }
 
 function publicClient() {
-  const url = process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  const url = process.env["SUPABASE_URL"] || import.meta.env["VITE_SUPABASE_URL"];
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"] || import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"];
   return createClient(url, key, {
     auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
   });
@@ -112,13 +112,13 @@ export async function handleHeadlessSignup(request: Request): Promise<Response> 
   const { data, error } = await publicClient().auth.signUp({
     email,
     password,
-    options: { data: full_name ? { full_name } : undefined },
+    options: full_name ? { data: { full_name } } : {},
   });
   // Generic reply so the endpoint can't be used to find out who has an account.
   if (error || !data.user) {
     await oauth.logIntegrationEvent({
       request,
-      userId: auth.principal.ownerId,
+      userId: auth.principal.subjectId,
       eventType: "headless.signup_failed",
       status: "warning",
       description: "Custom-form sign-up was refused",
@@ -127,13 +127,13 @@ export async function handleHeadlessSignup(request: Request): Promise<Response> 
     return oauth.oauthError("signup_failed", "Could not create this account.", 400);
   }
 
-  const stored = await linkUser(auth.principal.ownerId, data.user.id, metadata);
+  const stored = await linkUser(auth.principal.subjectId, data.user.id, metadata);
   await oauth.logIntegrationEvent({
     request,
     userId: data.user.id,
     eventType: "headless.signup",
     description: "Account created from a business's own sign-up form",
-    metadata: { key_id: auth.principal.keyId, business_id: auth.principal.ownerId },
+    metadata: { key_id: auth.principal.keyId, business_id: auth.principal.subjectId },
   });
   return oauth.jsonResponse(
     {
@@ -163,7 +163,7 @@ export async function handleHeadlessSignin(request: Request): Promise<Response> 
       eventType: "headless.signin_failed",
       status: "warning",
       description: "Custom-form sign-in was refused",
-      metadata: { key_id: auth.principal.keyId, business_id: auth.principal.ownerId },
+      metadata: { key_id: auth.principal.keyId, business_id: auth.principal.subjectId },
     });
     return oauth.oauthError("invalid_grant", "Email or password is incorrect.", 401);
   }
@@ -189,7 +189,7 @@ export async function handleHeadlessSignin(request: Request): Promise<Response> 
     );
   }
 
-  const stored = await linkUser(auth.principal.ownerId, userId);
+  const stored = await linkUser(auth.principal.subjectId, userId);
   const tokens = await oauth.issueTokens({
     clientId: `apikey:${auth.principal.keyId}`,
     userId,
@@ -203,14 +203,14 @@ export async function handleHeadlessSignin(request: Request): Promise<Response> 
     userId,
     eventType: "headless.signin",
     description: "Signed in from a business's own sign-in form",
-    metadata: { key_id: auth.principal.keyId, business_id: auth.principal.ownerId },
+    metadata: { key_id: auth.principal.keyId, business_id: auth.principal.subjectId },
   });
   return oauth.jsonResponse({
     ...tokens,
     user: {
       id: userId,
       email: data.user.email,
-      full_name: (data.user.user_metadata?.full_name as string | undefined) ?? null,
+      full_name: (data.user.user_metadata?.["full_name"] as string | undefined) ?? null,
       metadata: stored,
     },
   });
@@ -226,7 +226,7 @@ export async function handleUserDataGet(request: Request, userId: string): Promi
   const { data } = await db
     .from("business_user_data")
     .select("data, created_at, updated_at")
-    .eq("business_id", auth.principal.ownerId)
+    .eq("business_id", auth.principal.subjectId)
     .eq("user_id", userId)
     .maybeSingle();
   if (!data) return oauth.oauthError("not_found", "This person hasn't used your form.", 404);
@@ -243,10 +243,10 @@ export async function handleUserDataPut(request: Request, userId: string): Promi
   const { data: existing } = await db
     .from("business_user_data")
     .select("user_id")
-    .eq("business_id", auth.principal.ownerId)
+    .eq("business_id", auth.principal.subjectId)
     .eq("user_id", userId)
     .maybeSingle();
   if (!existing) return oauth.oauthError("not_found", "This person hasn't used your form.", 404);
-  const merged = await linkUser(auth.principal.ownerId, userId, body.data);
+  const merged = await linkUser(auth.principal.subjectId, userId, body.data);
   return oauth.jsonResponse({ user_id: userId, data: merged });
 }

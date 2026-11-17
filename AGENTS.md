@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Account recovery uses hashed, server-only backup codes with atomic consumption and persistent attempt limits; a redeemed code resets lost authenticators and passkeys before issuing a fresh sign-in token.
+- Headless custom-form sign-up/sign-in and per-business user data live in src/lib/headless-auth.server.ts behind /api/public/v1/auth/* and /users/:id/data; API-key only (users:read/users:write), throttled per IP+email, accounts with MFA/passkeys are refused and sent to hosted OAuth — why: businesses keep their own forms without weakening account protection.

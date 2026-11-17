@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { recoverWithBackupCode } from "@/lib/backup-codes.functions";
 
-export function BackupCodeRecovery() {
+export function BackupCodeRecovery({ next }: { next?: string } = {}) {
   const recover = useServerFn(recoverWithBackupCode);
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -22,7 +22,7 @@ export function BackupCodeRecovery() {
       const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "magiclink" });
       if (error) throw error;
       toast.success("Account recovered. Add new passkeys and an authenticator.");
-      window.location.replace("/account/security");
+      window.location.replace(next && next.startsWith("/oauth/authorize?") && !next.includes("//") ? next : "/account/security");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Recovery failed. Try again.");
     } finally { setBusy(false); }

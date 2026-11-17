@@ -20,11 +20,16 @@ export const Route = createFileRoute("/reset-password")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>): { next?: string } => {
+    const v = search["next"];
+    return typeof v === "string" && v.startsWith("/oauth/authorize?") && !v.includes("//") ? { next: v } : {};
+  },
   component: ResetPassword,
 });
 
 function ResetPassword() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const [ready, setReady] = useState(false);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -55,7 +60,8 @@ function ResetPassword() {
       return;
     }
     toast.success("Password updated");
-    navigate({ to: "/account", replace: true });
+    if (next) window.location.replace(next);
+    else navigate({ to: "/account", replace: true });
   }
 
   return (

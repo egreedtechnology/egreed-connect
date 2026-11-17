@@ -166,7 +166,9 @@ function AuthPage() {
     event.preventDefault();
     setPending("recovery");
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: next
+        ? `${window.location.origin}/reset-password?next=${encodeURIComponent(next)}`
+        : `${window.location.origin}/reset-password`,
     });
     setPending(null);
     if (error) {
@@ -293,7 +295,7 @@ function AuthPage() {
               </TabsContent>
 
               <TabsContent value="recovery" className="mt-6">
-                <BackupCodeRecovery />
+                <BackupCodeRecovery next={next} />
                 <Separator className="my-6" />
                 <form onSubmit={handleRecovery} className="space-y-4">
                   <div className="space-y-2">
